@@ -1,4 +1,4 @@
-
+require 'mocha'
 
 class XmlMocks
 

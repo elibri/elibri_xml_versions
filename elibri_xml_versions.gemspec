@@ -20,5 +20,6 @@ Gem::Specification.new do |s|
 
   # specify any dependencies here; for example:
   s.add_development_dependency "rspec"
-  # s.add_runtime_dependency "rexml"
+  s.add_development_dependency "mocha"
+  s.add_runtime_dependency "elibri_onix_dict"
 end
