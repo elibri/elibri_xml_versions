@@ -154,7 +154,7 @@ class XmlMocks
 
 
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_record_identifiers_example
@@ -177,7 +177,7 @@ class XmlMocks
                  :supplier_role_onix_code => Elibri::ONIX::Dict::Release_3_0::SupplierRole::WHOLESALER)
           ]
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -194,7 +194,7 @@ class XmlMocks
           :public? => true,
           :product_availabilities => []
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
     
 
@@ -212,7 +212,7 @@ class XmlMocks
           :public? => true,
           :product_availabilities => []
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -226,7 +226,7 @@ class XmlMocks
                stub('PublisherProductCategory', :name => "Beletrystyka: Sensacja")
             ]
          )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_languages_example
@@ -237,7 +237,7 @@ class XmlMocks
             stub('Language', :language_onix_code => 'eng', :role_onix_code => Elibri::ONIX::Dict::Release_3_0::LanguageRole::LANGUAGE_OF_ABSTRACTS)
           ]
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -257,7 +257,7 @@ class XmlMocks
           :state => "published",
           :public? => true
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -271,7 +271,7 @@ class XmlMocks
           :publication_month => 7,
           :publication_day => 12
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -281,7 +281,7 @@ class XmlMocks
           :audience_age_from => 7,
           :audience_age_to => 10 
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -292,7 +292,7 @@ class XmlMocks
           :publisher_id => 14,
           :imprint => stub('Imprint', :name => 'National Geographic')
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -303,7 +303,7 @@ class XmlMocks
           :elibri_product_category1_id => 1110,
           :elibri_product_category2_id => 491
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -312,7 +312,7 @@ class XmlMocks
         product.stubs(
           :edition_statement => 'wyd. 3, poprawione'
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -326,7 +326,7 @@ class XmlMocks
             :number_of_pages => 150,
             :number_of_illustrations => 12
           )
-        end
+        end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_audiobook_extent_example 
@@ -337,7 +337,7 @@ class XmlMocks
             :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::AUDIO_CD,
             :duration => 340
           )
-        end
+        end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
  
     def onix_no_contributors_example
@@ -347,7 +347,7 @@ class XmlMocks
             :example_title => 'Brak autorów',
             :authorship_kind => ActiveSupport::StringInquirer.new("no_contributor")
           )
-        end
+        end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_collective_work_example
@@ -357,7 +357,7 @@ class XmlMocks
             :example_title => 'Praca zbiorowa',
             :authorship_kind => ActiveSupport::StringInquirer.new("collective")
           )
-        end
+        end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_contributors_example
@@ -389,7 +389,7 @@ class XmlMocks
               )
             ]
           )
-        end
+        end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_announced_product_example
@@ -403,7 +403,7 @@ class XmlMocks
           :subtitle => "Zwyczajne losy mieszkańców Korei Północnej.",
           :publication_year => 2011
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_preorder_product_example
@@ -414,7 +414,7 @@ class XmlMocks
           :publication_month => 2,
           :publication_day => 10
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_published_product_example
@@ -424,7 +424,7 @@ class XmlMocks
           :publication_year => 2011,
           :publication_month => 2
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_out_of_print_product_example
@@ -432,7 +432,7 @@ class XmlMocks
         product.stubs(
           :state => "out_of_print"
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_titles_example
@@ -444,7 +444,7 @@ class XmlMocks
           :title => 'Światu nie mamy czego zazdrościć.',
           :subtitle => "Zwyczajne losy mieszkańców Korei Północnej."
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
     def onix_title_with_collection_example
@@ -456,7 +456,7 @@ class XmlMocks
           :title => 'Statek-Miecz',
           :collection => stub('PublisherCollection', :name => 'Thorgal')
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -495,7 +495,7 @@ class XmlMocks
                 ),
           ]
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -505,7 +505,7 @@ class XmlMocks
           :facsimiles => [stub('Product', :publisher_name => 'PWN', :publisher_id => 11, :publisher_symbol => 'Tytuł dodruku', :isbn_value => '9788324705818')],
           :similar_products => [stub('Product', :publisher_name => 'WNT', :publisher_id => 12, :publisher_symbol => 'Tytuł podobnej książki', :isbn_value => '9788324799992')]
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -544,7 +544,7 @@ class XmlMocks
                 )
           ]
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -557,7 +557,7 @@ class XmlMocks
             stub('SeriesMembership', :series_name => 'Dla Bystrzaków', :number_within_series => '1')
           ]
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -583,7 +583,7 @@ class XmlMocks
                 )
           ]
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -596,7 +596,7 @@ class XmlMocks
           :price_amount => 12.99,
           :preview_exists? => true
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
   end
