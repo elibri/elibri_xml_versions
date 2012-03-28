@@ -1,5 +1,3 @@
-require 'mocha'
-
 class XmlMocks
 
   # Przykładowe produkty dla generatora XML. Są to sztuczne twory (nie ma sensu tworzyć rekordów
@@ -15,7 +13,7 @@ class XmlMocks
 
     # Najprostszy produkt, dla którego XML się waliduje przez RelaxNG
     def basic_product(options = {})
-      Product.new.tap do |product|
+      mock("product") do |product|
         product.stubs(
           :title => "Nielegalni",
           :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::BOOK,
@@ -31,7 +29,7 @@ class XmlMocks
 
 
     def book_example
-      @product_example ||= Product.new.tap do |product|
+      @product_example ||= mock("product").tap do |product|
         product.stubs(
           :state => "published",
           :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::BOOK,
@@ -158,7 +156,7 @@ class XmlMocks
     end
 
     def onix_record_identifiers_example
-      @onix_record_identifiers_example ||= Product.new.tap do |product|
+      @onix_record_identifiers_example ||= mock("product").tap do |product|
         product.stubs(
           :state => "published",
           :title => "Nielegalni",
@@ -181,7 +179,7 @@ class XmlMocks
 
 
     def onix_product_form_example
-      @onix_product_form_example ||= Product.new.tap do |product|
+      @onix_product_form_example ||= mock("product").tap do |product|
         product.stubs(
           :title => "Nielegalni",
           :ean => nil,
@@ -196,7 +194,7 @@ class XmlMocks
     
 
     def onix_epub_details_example
-      @onix_epub_details_example ||= Product.new.tap do |product|
+      @onix_epub_details_example ||= mock("product").tap do |product|
         product.stubs(
           :title => "Nielegalni",
           :ean => nil,
@@ -237,7 +235,7 @@ class XmlMocks
 
 
     def onix_measurement_example
-      @onix_measurement_example ||= Product.new.tap do |product|
+      @onix_measurement_example ||= mock("product").tap do |product|
         product.stubs(
           :title => "Katowice, mapa",
           :ean => nil,
