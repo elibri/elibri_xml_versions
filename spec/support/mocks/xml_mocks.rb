@@ -21,7 +21,7 @@ class XmlMocks
       :facsimiles => [],
       :similar_products => [],
       :state => "published",
-      :public? => true}.merge (options)
+      :public? => true}.merge(options)
       mock("product") do |product|
         product.stubs(
           opt
