@@ -78,17 +78,17 @@ module OnixHelpers
 
 
     def publishing_status_onix_code
-      if current_state == :private #domyślny stan
+      if current_state.to_sym == :private #domyślny stan
         raise "Cannot handle private state"
-      elsif current_state == :announced    #zapowiedź
+      elsif current_state.to_sym == :announced    #zapowiedź
         Elibri::ONIX::Dict::Release_3_0::PublishingStatusCode::FORTHCOMING
-      elsif current_state == :preorder     #przedsprzedaż
+      elsif current_state.to_sym == :preorder     #przedsprzedaż
         Elibri::ONIX::Dict::Release_3_0::PublishingStatusCode::FORTHCOMING
-      elsif current_state == :published    #dostępna na rynku
+      elsif current_state.to_sym == :published    #dostępna na rynku
         Elibri::ONIX::Dict::Release_3_0::PublishingStatusCode::ACTIVE
-      elsif current_state == :out_of_print #nakład wyczerpany
+      elsif current_state.to_sym == :out_of_print #nakład wyczerpany
         Elibri::ONIX::Dict::Release_3_0::PublishingStatusCode::OUT_OF_PRINT
-      elsif current_state == :deleted      #błędnie stworzony rekord
+      elsif current_state.to_sym == :deleted      #błędnie stworzony rekord
         Elibri::ONIX::Dict::Release_3_0::PublishingStatusCode::UNSPECIFIED
       else
         raise "Don't know how to handle state = #{current_state}"
@@ -131,7 +131,7 @@ module OnixHelpers
 
 
     def authorship_kind
-      value = self.read_attribute(:authorship_kind) || :user_given
+      value = self.method_missing(:authorship_kind) || :user_given
       ActiveSupport::StringInquirer.new(value.to_s)
     end
 
