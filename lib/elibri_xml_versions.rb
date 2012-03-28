@@ -19,6 +19,26 @@ module Elibri
                         :record_reference, :notification_type, :deletion_text,
                         
                         ]
+                        
+    TREE_ATTRIBS = {
+      :reviews => [:artificial_id, :type_onix_code, :text, :text_author, :updated_at,
+                                           :exportable?, :is_a_review?, :resource_link]
+                    }
+                        
+    COVER_TYPES= [      1  => 'gąbka',
+                        2 => 'kartonowa',
+                        3 => 'kartonowa foliowana',
+                        4 => 'miękka',
+                        5 => 'miękka ze skrzydełkami',
+                        6 => 'plastikowa',
+                        7 => 'skórzana',
+                        8 => 'twarda',
+                        9 => 'twarda z obwolutą',
+                        10 => 'twarda lakierowana']
+                        
+    HARDBACK = 8
+    PLASTIC = 6
+    PAPERBACK = 4
     
     attr_accessor :a, :b
     
@@ -30,7 +50,14 @@ module Elibri
     def diff
       diffs = []
       ATTRIBS.each do |attrib|
-        diffs << attrib if @a.send(attrib) != @b.send(attrib)
+        if TREE_ATTRIBS.keys.include? attrib
+#          @a.attrib.map
+          TREE_ATTRIBS[attrib].each do |tree_attrib|
+ #           diffs << [] if 
+          end
+        else
+          diffs << attrib if @a.send(attrib) != @b.send(attrib)
+        end
       end
       diffs
     end

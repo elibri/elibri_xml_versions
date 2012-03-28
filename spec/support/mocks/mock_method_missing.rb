@@ -2,11 +2,8 @@ module MockMethodMissing
 
 #TODO: dodać sprawdzanie czy obiekt przypadkiem nie zna metody
   def method_missing(m, *args, &block)
-
     if m == :product_form_onix_code
       super
-    elsif Attributes::EXCLUDED_ATTRIBUTES[product_form_onix_code].include? m
-     nil
     elsif [:kind_of_audio?, :kind_of_book?, :kind_of_map?, :kind_of_ebook?, :kind_of_measurable?].include? m
       nil #TODO - dlaczego tak jest, jak to poprawić
     elsif [:publisher_id, :publisher_symbol, :record_reference, :ean, :no_isbn, 
@@ -41,7 +38,11 @@ module MockMethodMissing
         []
       end
     else
-      super
+      begin
+        super
+      rescue Mocha::ExpectationError
+        nil
+      end        
     end
   end 
   
