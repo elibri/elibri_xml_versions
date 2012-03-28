@@ -19,3 +19,7 @@ require 'ruby-debug'
 RSpec.configure do |config|
   # some (optional) config here
 end
+
+def xml_from_mock(sym, options = {})
+  Elibri::ONIX::Release_3_0::ONIXMessage.from_xml(ONIX::XMLGenerator.new(XmlMocks::Examples.send(sym, options)).to_s)
+end

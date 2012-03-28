@@ -13,17 +13,18 @@ class XmlMocks
 
     # Najprostszy produkt, dla którego XML się waliduje przez RelaxNG
     def basic_product(options = {})
+      opt = {:title => "Nielegalni",
+      :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::BOOK,
+      :ean => nil,
+      :isbn_value => '9788324799992',
+      :record_reference => "fdb8fa072be774d97a97",
+      :facsimiles => [],
+      :similar_products => [],
+      :state => "published",
+      :public? => true}.merge (options)
       mock("product") do |product|
         product.stubs(
-          :title => "Nielegalni",
-          :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::BOOK,
-          :ean => nil,
-          :isbn_value => '9788324799992',
-          :record_reference => "fdb8fa072be774d97a97",
-          :facsimiles => [],
-          :similar_products => [],
-          :state => "published",
-          :public? => true
+          opt
         )
       end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end

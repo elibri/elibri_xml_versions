@@ -15,7 +15,7 @@ module Elibri
     end
     
     def compare
-      return true
+      @a == @b
     end
     
   end
