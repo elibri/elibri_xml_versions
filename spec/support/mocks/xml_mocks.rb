@@ -22,9 +22,10 @@ class XmlMocks
           :record_reference => "fdb8fa072be774d97a97",
           :facsimiles => [],
           :similar_products => [],
-          :state => "published"
+          :state => "published",
+          :public? => true
         )
-      end
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
 
@@ -32,6 +33,7 @@ class XmlMocks
       @product_example ||= mock("product").tap do |product|
         product.stubs(
           :state => "published",
+          :public? => true,
           :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::BOOK,
           :cover_type_id => Product::CoverType::PAPERBACK,
           :publishing_status_onix_code => Elibri::ONIX::Dict::Release_3_0::PublishingStatusCode::ACTIVE,
@@ -164,6 +166,7 @@ class XmlMocks
           :record_reference => "fdb8fa072be774d97a97",
           :ean => '9788324788882',
           :isbn_value => '9788324799992',
+          :public? => true,
           :product_availabilities => [
             stub('ProductAvailability', :supplier_identifier => '355006',
                  :product_availability_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductAvailabilityType::IN_STOCK,
@@ -187,7 +190,9 @@ class XmlMocks
           :record_reference => "fdb8fa072be774d97a97",
           :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::BOOK,
           :cover_type_id => Product::CoverType::PAPERBACK,
-          :state => "published"
+          :state => "published",
+          :public? => true,
+          :product_availabilities => []
         )
       end
     end
@@ -203,7 +208,9 @@ class XmlMocks
           :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::EBOOK,
           :epub_technical_protection_onix_code => Elibri::ONIX::Dict::Release_3_0::EpubTechnicalProtection::DRM,
           :product_form_detail_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormDetail::EPUB,
-          :state => "published"
+          :state => "published",
+          :public? => true,
+          :product_availabilities => []
         )
       end
     end
@@ -247,7 +254,8 @@ class XmlMocks
           :thickness => 20,
           :weight => 90,
           :map_scale => 50_000, 
-          :state => "published"
+          :state => "published",
+          :public? => true
         )
       end
     end
