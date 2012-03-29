@@ -20,10 +20,10 @@ module Elibri
                         
                         ]
                         
-    TREE_ATTRIBS = {
-      :reviews => [:artificial_id, :type_onix_code, :text, :text_author, :updated_at,
-                                           :exportable?, :is_a_review?, :resource_link]
-                    }
+    TREE_ATTRIBS = [:reviews, :identifiers, :roxml_references, :title_details]
+#      :reviews => [:artificial_id, :type_onix_code, :text, :text_author, :updated_at,
+#                                           :exportable?, :is_a_review?, :resource_link]
+#                    }
                         
     COVER_TYPES= [      1  => 'gąbka',
                         2 => 'kartonowa',
@@ -48,18 +48,78 @@ module Elibri
     end
     
     def diff
+=begin
       diffs = []
-      ATTRIBS.each do |attrib|
-        if TREE_ATTRIBS.keys.include? attrib
-#          @a.attrib.map
-          TREE_ATTRIBS[attrib].each do |tree_attrib|
- #           diffs << [] if 
+      @a.instance_variables.each do |attrib|
+        attrib = attrib.gsub("@", "").to_sym
+        if TREE_ATTRIBS.include? attrib
+          tree_attr = @a.send(attrib).map(&:id).sort
+          tree_attr_2 = @b.send(attrib).map(&:id).sort
+          if tree_attr != tree_attr_2         
+            #coś dopisane/usunięte
+          else
+            #trzeba sprawdzić czy wszystkie są takie same
+            attr_1 = @a.send(attrib).sort { |x,y| x.id <=> y.id }
+            attr_2 = @b.send(attrib).sort! { |x,y| x.id <=> y.id }
+            attr_1.each_with_index do |element, i|
+              element.instance_variables.each do |var|
+                var = var.gsub("@", "").to_sym
+                diffs << [attrib, var] if element.send(var) != attr_2[i].send(var)
+              end
+            end
           end
         else
           diffs << attrib if @a.send(attrib) != @b.send(attrib)
         end
       end
       diffs
+=end
+      check_tree(@a, @b)
+    end
+    
+    
+    def check_tree(a, b)
+      raise "Different classes for diff" if a.class != b.class
+      changes = []
+      deleted = []
+      added = []
+      if a.is_a? Array
+        a.sort! { |x,y| x.id <=> y.id }
+        b.sort! { |x,y| x.id <=> y.id }
+        #obsługa dodania i usunięcia elementów
+        if a.map(&:id) != b.map(&:id)
+          deleted_ids = a.map(&:id) - b.map(&:id)
+          added_ids = b.map(&:id) - a.map(&:id)
+          deleted_ids.each do |id|
+     #       deleted << a.find { |x| x.id == id }
+            a.delete(a.find { |x| x.id == id })
+          end
+          added_ids.each do |id|
+      #      added << b.find { |x| x.id == id }            
+            b.delete(b.find { |x| x.id == id })
+          end
+        end
+        #obsługa różnych elementów w arrayu
+        a.each_with_index do |element, i|
+          ret = check_tree(element, b[i])
+          changes += ret[:changes]
+          added += ret[:added]
+          deleted += ret[:deleted]
+        end
+      else
+        a.instance_variables.each do |attrib|
+          attrib = attrib.gsub("@", "").to_sym
+          if a.send(attrib).is_a? Array
+            ret = check_tree(a.send(attrib), b.send(attrib))
+            changes += [attrib, ret[:changes]] if !ret[:changes].blank?
+            added += [attrib, ret[:added]] if !ret[:added].blank?
+            deleted += [attrib, ret[:deleted]] if !ret[:deleted].blank?
+          else
+            changes << attrib if a.send(attrib) != b.send(attrib)
+          end
+        end
+      end
+      return {:deleted => deleted, :added => added, :changes => changes}
     end
     
   end
