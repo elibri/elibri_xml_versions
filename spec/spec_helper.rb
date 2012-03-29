@@ -23,3 +23,11 @@ end
 def onix_from_mock(sym, options = {})
   Elibri::ONIX::Release_3_0::ONIXMessage.from_xml(ONIX::XMLGenerator.new(XmlMocks::Examples.send(sym, options)).to_s)
 end
+
+def xml_parse(xml_string)
+  Elibri::ONIX::Release_3_0::ONIXMessage.from_xml(xml_string)
+end
+
+def generate_xml(mock)
+  ONIX::XMLGenerator.new(mock)
+end

@@ -24,6 +24,8 @@ module Elibri
 #      :reviews => [:artificial_id, :type_onix_code, :text, :text_author, :updated_at,
 #                                           :exportable?, :is_a_review?, :resource_link]
 #                    }
+
+    SKIPPED_ATTRIBS = ["@opts", "@default_namespace", "@instance"]
                         
     COVER_TYPES= [      1  => 'gąbka',
                         2 => 'kartonowa',
@@ -91,11 +93,11 @@ module Elibri
           deleted_ids = a.map(&:id) - b.map(&:id)
           added_ids = b.map(&:id) - a.map(&:id)
           deleted_ids.each do |id|
-            deleted << a.find { |x| x.id == id }
+            deleted << id  unless (a.find { |x| x.id == id }) || a.find { |x| x.id == id }.empty?
             a.delete(a.find { |x| x.id == id })
           end
           added_ids.each do |id|
-            added << b.find { |x| x.id == id }            
+            added << id unless (b.find { |x| x.id == id }) || b.find { |x| x.id == id }.empty?            
             b.delete(b.find { |x| x.id == id })
           end
         end
@@ -108,6 +110,7 @@ module Elibri
         end
       else
         a.instance_variables.each do |attrib|
+          next if SKIPPED_ATTRIBS.include? attrib
           attrib = attrib.gsub("@", "").to_sym
           if a.send(attrib).is_a? Array
             ret = check_tree(a.send(attrib), b.send(attrib))
@@ -115,7 +118,15 @@ module Elibri
             added += [attrib, ret[:added]] if !ret[:added].blank?
             deleted += [attrib, ret[:deleted]] if !ret[:deleted].blank?
           else
-            changes << attrib if a.send(attrib) != b.send(attrib)
+            if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Integer))
+              changes << attrib if a.send(attrib) != b.send(attrib)
+            else
+              #klasa zlozona
+              ret = check_tree(a.send(attrib), b.send(attrib))
+              changes += [attrib, ret[:changes]] if !ret[:changes].blank?
+              added += [attrib, ret[:added]] if !ret[:added].blank?
+              deleted += [attrib, ret[:deleted]] if !ret[:deleted].blank?
+            end
           end
         end
       end
