@@ -6,6 +6,7 @@ describe Elibri::XmlVersions do
     generated_product = onix_from_mock(:basic_product)
     generated_product_2 = onix_from_mock(:basic_product)
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+    debugger
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})
   end
   

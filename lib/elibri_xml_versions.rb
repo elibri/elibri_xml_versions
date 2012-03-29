@@ -91,11 +91,11 @@ module Elibri
           deleted_ids = a.map(&:id) - b.map(&:id)
           added_ids = b.map(&:id) - a.map(&:id)
           deleted_ids.each do |id|
-     #       deleted << a.find { |x| x.id == id }
+            deleted << a.find { |x| x.id == id }
             a.delete(a.find { |x| x.id == id })
           end
           added_ids.each do |id|
-      #      added << b.find { |x| x.id == id }            
+            added << b.find { |x| x.id == id }            
             b.delete(b.find { |x| x.id == id })
           end
         end
