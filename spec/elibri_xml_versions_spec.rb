@@ -12,7 +12,8 @@ describe Elibri::XmlVersions do
     :series_memberships => [],
     :facsimiles => [],
     :similar_products => [],
-    :product_attachments => []
+    :product_attachments => [],
+    :product_availabilities => []
   }
 
   it "should return no changes for same basic elibri object" do
@@ -99,17 +100,20 @@ describe Elibri::XmlVersions do
       :deletion_text => :deletion_text,
       :isbn_value => :isbn13,
       :ean => :ean,
-      :deletion_text => :deletion_text
+      :deletion_text => :deletion_text,
+      :trade_title => :trade_title,
+      :pkwiu => :pkwiu_from_3_0_1,
+      :title => :title,
+      :subtitle => :subtitle,
+      :edition_statement => :edition_statement
     }
 
     #strings
     [
- #     
-      #, ,
-       :publisher_name, :record_reference,
-       :ean, :isbn_value,
-       :deletion_text, :or_title,
-    #  :trade_title, :pkwiu, :title, :subtitle, :edition_statement, :collection_part
+      :publisher_name, :record_reference,
+      :ean, :isbn_value, :deletion_text, :or_title,
+      :trade_title, :pkwiu, :title, :subtitle, 
+      :edition_statement
     ].each do |symbol|
     
       it "should return change when #{symbol} change in two books objects (one with default settings)" do
