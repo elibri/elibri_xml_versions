@@ -1,54 +1,66 @@
 require 'spec_helper'
-
+$VERBOSE = nil #temp: supress id warnings
 describe Elibri::XmlVersions do
-  
+
+  RAW_EXTRAS = {
+    :imprint => nil,
+    :authorship_kind => nil,
+    :contributors => [],
+    :languages => [],
+    :other_texts => [],
+    :series_membership_kind => nil,
+    :series_memberships => [],
+    :facsimiles => [],
+    :similar_products => [],
+    :product_attachments => []
+  }
+
   it "should return no changes for same basic elibri object" do
     generated_product = onix_from_mock(:basic_product)
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})
   end
-  
+
   it "should return no changes for same basic elibri object double generated" do
     generated_product = onix_from_mock(:basic_product)
     generated_product_2 = onix_from_mock(:basic_product)
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})
-#    @elibri_xml_versions.diff[:changes].should eq([])
   end
-   
+ 
   it "should return change for different basic elibri objects" do
     generated_product = onix_from_mock(:basic_product, :record_reference => 'fdb8fa072be774d97a97')
     generated_product_2 = onix_from_mock(:basic_product, :record_reference => 'fdb8fa072be774d97a95')
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [:record_reference]})
   end
- 
+
   it "should return no changes for same book elibri objects" do
     generated_product = onix_from_mock(:book_example)
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
   end
-  
+
   it "should return no changes for same book elibri objects double generated" do
     mock = XmlMocks::Examples.review_mock
-    generated_product = onix_from_mock(:book_example, {}, :other_texts => [mock])
-    generated_product_2 = onix_from_mock(:book_example, {}, :other_texts => [mock])
+    generated_product = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge(:other_texts => [mock]) )
+    generated_product_2 = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge(:other_texts => [mock]) )
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
   end
-  
+
   it "should return change for different book elibri objects" do
     review_mock = XmlMocks::Examples.review_mock
     supply_details = XmlMocks::Examples.supply_detail_mock
-    generated_product = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a97'}, :other_texts => [review_mock], :product_availabilities => [supply_details])
-    generated_product_2 = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a95'}, :other_texts => [review_mock], :product_availabilities => [supply_details])
+    generated_product = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a97'}, RAW_EXTRAS.merge(:other_texts => [review_mock], :product_availabilities => [supply_details]))
+    generated_product_2 = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a95'}, RAW_EXTRAS.merge(:other_texts => [review_mock], :product_availabilities => [supply_details]))
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [:record_reference]})
   end
-  
+
   it "should return added element when new review is added" do
-    generated_product = onix_from_mock(:book_example, {}, :other_texts => [XmlMocks::Examples.review_mock])
-    generated_product_2 = onix_from_mock(:book_example, {}, :other_texts => [XmlMocks::Examples.review_mock, XmlMocks::Examples.review_mock(:text_author => "lobuz lobuzialski")])
+    generated_product = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge(:other_texts => [XmlMocks::Examples.review_mock]))
+    generated_product_2 = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge(:other_texts => [XmlMocks::Examples.review_mock, XmlMocks::Examples.review_mock(:text_author => "lobuz lobuzialski")]))
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     result = @elibri_xml_versions.diff
     (@elibri_xml_versions.convert_arr_to_hash result[:added])[:reviews].count.should eq(2)
@@ -58,18 +70,106 @@ describe Elibri::XmlVersions do
     result[:added].count.should eq(2)
     result[:deleted].count.should eq(2)
     end
-    
+  
     it "should return no changes for same onix_record_identifiers_example objects" do
       generated_product = onix_from_mock(:onix_record_identifiers_example)
       @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product.products.first)
       @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
     end
-    
+  
     it "should return no changes for double generated onix_record_identifiers_example objects" do
       generated_product = onix_from_mock(:onix_record_identifiers_example)
       generated_product_2 = onix_from_mock(:onix_record_identifiers_example)      
       @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
       @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
     end
+
+    SPLITTING_SYMBOLS = [
+      :publisher_name
+    ]
+  
+    SIMPLE_SYMBOLS = [
+      :publisher_name, :record_reference
+    ]
+
+    TRAVERSE_VECTOR = {
+      :or_title => :original_title,
+      :publisher_name => :publisher_name,
+      :record_reference => :record_reference,
+      :deletion_text => :deletion_text,
+      :isbn_value => :isbn13,
+      :ean => :ean
+    }
+
+    #strings
+    [
+ #     
+      #, ,
+       :publisher_name, :record_reference,
+       :ean, :isbn_value,
+    #   :deletion_text, :or_title,
+    #  :trade_title, :pkwiu, :title, :subtitle, :edition_statement, :collection_part
+    ].each do |symbol|
     
+      it "should return change when #{symbol} change in two books objects (one with default settings)" do
+        string = "ehdroruwnm"
+        generated_product = onix_from_mock(:book_example, {}, RAW_EXTRAS)
+        generated_product_2 = onix_from_mock(:book_example, {symbol => string}, RAW_EXTRAS)
+        @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+#        if SPLITTING_SYMBOLS.include?(symbol)
+#          @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [symbol, {symbol.to_s.split("_")[0].to_sym => [symbol.to_s.split("_")[1].to_sym]}]})
+#        else
+          @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol]) #eq({:deleted => [], :added => [], :changes => [symbol]})
+#        end
+      end
+ 
+      it "should return change when #{symbol} change in two books objects" do
+        string = "ehdroruwnm"
+        string2 = "TOXYAUEJ"
+        review_mock = XmlMocks::Examples.review_mock
+        supply_details = XmlMocks::Examples.supply_detail_mock
+        generated_product = onix_from_mock(:book_example, {symbol => string}, RAW_EXTRAS)
+        generated_product_2 = onix_from_mock(:book_example, {symbol => string2}, RAW_EXTRAS)
+        @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+#        if SPLITTING_SYMBOLS.include?(symbol)
+#          @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [symbol, {symbol.to_s.split("_")[0].to_sym => [symbol.to_s.split("_")[1].to_sym]}]})
+#        else
+#          @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [symbol]})
+#        end
+          @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol])
+      end
+    
+      it "should return change when #{symbol} change in two basic products objects (one with default settings)" do
+        string = "ehdroruwnm"
+        generated_product = onix_from_mock(:basic_product)
+        generated_product_2 = onix_from_mock(:basic_product, {symbol => string})
+        @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+        if SPLITTING_SYMBOLS.include?(symbol)
+#          @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [symbol.to_s.split("_")[0].to_sym]})
+#        else
+#          @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [symbol]})
+#        end
+          @elibri_xml_versions.diff[:changes].should include(symbol.to_s.split("_")[0].to_sym)
+        else
+          @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol])
+        end
+      end
+    
+      it "should return change when #{symbol} change in two basic products objects" do
+        string = "ehdroruwnm"
+        string2 = "TOXYAUEJ"
+        generated_product = onix_from_mock(:basic_product, {symbol => string})
+        generated_product_2 = onix_from_mock(:basic_product, {symbol => string2})
+        @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+#        if SPLITTING_SYMBOLS.include?(symbol)
+#          @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [symbol, {symbol.to_s.split("_")[0].to_sym => [symbol.to_s.split("_")[1].to_sym]}]})
+#        else
+#          @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [symbol]})
+#        end
+        @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol])
+      end
+
+    #end strings  
+    end
+
 end

@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "builder"
   
   s.add_development_dependency "ruby-debug"
+
   
   s.add_runtime_dependency "elibri_onix_dict"
   s.add_runtime_dependency 'elibri_api_client'

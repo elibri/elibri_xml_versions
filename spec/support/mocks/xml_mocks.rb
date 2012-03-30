@@ -42,7 +42,7 @@ class XmlMocks
         :publication_day => 10,
         :publisher_symbol => "W pustyni i w puszczy",
         :record_reference => "fdb8fa072be774d97a97",
-        :imprint => stub('Imprint', :name => 'National Geographic'),
+        :imprint => extras[:imprint] || stub('Imprint', :name => 'National Geographic'),
         :publisher_name => 'GREG',
         :publisher_id => 11,
         :ean => '9788324788882',
@@ -69,7 +69,7 @@ class XmlMocks
         :audience_age_from => 7,
         :audience_age_to => 25,
         # Trochę oszukujemy, żeby w XML`u pokazać wszystkie 3 opcje:
-        :authorship_kind => stub('authorship_kind', :user_given? => true, :collective? => false, :no_contributor? => false),
+        :authorship_kind => extras[:authorship_kind] || stub('authorship_kind', :user_given? => true, :collective? => false, :no_contributor? => false),
         :contributors => extras[:contributors] || [
           stub('Contributor',
             :artificial_id => 257,
@@ -94,7 +94,7 @@ class XmlMocks
         :subtitle => 'Podtytuł',
         :collection => stub('PublisherCollection', :name => 'Nazwa kolekcji'),
         :edition_statement => 'wyd. 3, poprawione',
-        :languages => [stub('Language', :language_onix_code => 'pol', :role_onix_code => Elibri::ONIX::Dict::Release_3_0::LanguageRole::LANGUAGE_OF_TEXT)],
+        :languages => extras[:languages] || [stub('Language', :language_onix_code => 'pol', :role_onix_code => Elibri::ONIX::Dict::Release_3_0::LanguageRole::LANGUAGE_OF_TEXT)],
         :other_texts => extras[:other_texts] || [
           stub('OtherText',
                :artificial_id => 137,
@@ -107,12 +107,12 @@ class XmlMocks
                :resource_link => 'http://example'
               ).extend(MockMethodMissing)
         ],
-        :series_membership_kind => stub('series_membership_kind', :user_given? => true),
+        :series_membership_kind => extras[:series_membership_kind] || stub('series_membership_kind', :user_given? => true),
         :series_memberships => extras[:series_memberships] || [
           stub('SeriesMembership', :series_name => 'Lektury szkolne', :number_within_series => '2')
         ],
-        :facsimiles => [stub('Product', :publisher_name => 'PWN', :publisher_id => 12, :publisher_symbol => 'Tytuł dodruku', :isbn_value => '9788324705818')],
-        :similar_products => [stub('Product', :publisher_name => 'WNT', :publisher_id => 13, :publisher_symbol => 'Tytuł podobnej książki', :isbn_value => '9788324799992')],
+        :facsimiles => extras[:facsimiles] || [stub('Product', :publisher_name => 'PWN', :publisher_id => 12, :publisher_symbol => 'Tytuł dodruku', :isbn_value => '9788324705818')],
+        :similar_products => extras[:similar_products] || [stub('Product', :publisher_name => 'WNT', :publisher_id => 13, :publisher_symbol => 'Tytuł podobnej książki', :isbn_value => '9788324799992')],
         :attachments => extras[:product_attachments] || [
           stub('ProductAttachment', 
                :id => 668,

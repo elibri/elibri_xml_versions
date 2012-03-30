@@ -82,7 +82,19 @@ module Elibri
     
     
     def check_tree(a, b)
-      raise "Different classes for diff" if a.class != b.class
+     if a.class != b.class
+       raise "Different classes for diff" 
+     end
+=begin
+        if a.class.is_a? NilClass
+          return {:deleted => [], :added => [], :changes => [b]}
+        elsif b.class.is_a? NilClass
+          return {:deleted => [], :added => [], :changes => [a]}
+        else
+
+        end
+      end
+=end
       changes = []
       deleted = []
       added = []
@@ -138,7 +150,7 @@ module Elibri
             added << {attrib, ret[:added]} if !ret[:added].blank?
             deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
           else
-            if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Integer))
+            if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Integer) || a.send(attrib).is_a?(NilClass) || b.send(attrib).is_a?(NilClass))
               changes << attrib if a.send(attrib) != b.send(attrib)
             else
               #klasa zlozona
