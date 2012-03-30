@@ -89,20 +89,33 @@ module Elibri
       if a.is_a? Array
         a.sort! { |x,y| x.id <=> y.id }
         b.sort! { |x,y| x.id <=> y.id }
+=begin
+        ch = []
+        del = []
+        add = []
+        a.each_with_index do |element, i|
+          res = check_tree(element, b[i])
+          ch += res[:changes]
+          del += res[:deleted]
+          add += res[:added]
+        end
+=end       
         #obsługa dodania i usunięcia elementów
         #problematyczne są części rekordu które nie są identyfikowalne jako identyczne :(
+#        a_m = a.map { |x| calculate_yaml_hash(x) }
+#        b_m = b.map { |x| calculate_yaml_hash(x) }
         if a.map(&:id) != b.map(&:id)
           deleted_ids = a.map(&:id) - b.map(&:id)
           added_ids = b.map(&:id) - a.map(&:id)
           deleted_ids.each do |id|
             if a.find { |x| x.id == id } && !a.find { |x| x.id == id }.blank?
-              deleted << id
+              deleted << a.find { |x| x.id == id }
               a.delete(a.find { |x| x.id == id })
             end
           end
           added_ids.each do |id|
             if b.find { |x| x.id == id } && !b.find { |x| x.id == id }.blank?
-              added << id
+              added << b.find { |x| x.id == id }
               b.delete(b.find { |x| x.id == id })
             end
           end
@@ -120,18 +133,18 @@ module Elibri
           attrib = attrib.gsub("@", "").to_sym
           if a.send(attrib).is_a? Array
             ret = check_tree(a.send(attrib), b.send(attrib))
-            changes += [attrib, ret[:changes]] if !ret[:changes].blank?
-            added += [attrib, ret[:added]] if !ret[:added].blank?
-            deleted += [attrib, ret[:deleted]] if !ret[:deleted].blank?
+            changes << {attrib, ret[:changes]} if !ret[:changes].blank?
+            added << {attrib, ret[:added]} if !ret[:added].blank?
+            deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
           else
             if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Integer))
               changes << attrib if a.send(attrib) != b.send(attrib)
             else
               #klasa zlozona
               ret = check_tree(a.send(attrib), b.send(attrib))
-              changes += [attrib, ret[:changes]] if !ret[:changes].blank?
-              added += [attrib, ret[:added]] if !ret[:added].blank?
-              deleted += [attrib, ret[:deleted]] if !ret[:deleted].blank?
+              changes << {attrib, ret[:changes]} if !ret[:changes].blank?
+              added << {attrib, ret[:added]} if !ret[:added].blank?
+              deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
             end
           end
         end
@@ -139,10 +152,14 @@ module Elibri
       return {:deleted => deleted, :added => added, :changes => changes}
     end
     
-  end
-  
-  def calculate_yaml_hash(object)
-    Digest::SHA512.hexdigest(object.to_yaml)
+    def calculate_yaml_hash(object)
+      begin
+        Digest::SHA512.hexdigest(Marshal.dump(object))
+      rescue Exception
+        Digest::SHA512.hexdigest("#{rand(500000)}-#{DateTime.now.to_s}")
+      end
+    end
+    
   end
   
 end
