@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = "elibri_xml_versions"
   s.version     = ElibriXmlVersions::VERSION
   s.authors     = ["Piotr Szmielew"]
-  s.email       = ["p.szmielew@beinformed.pl"]
+  s.email       = ["p.szmielew@ava.waw.pl"]
   s.homepage    = ""
   s.summary     = %q{TODO: Write a gem summary}
   s.description = %q{TODO: Write a gem description}
@@ -20,12 +20,9 @@ Gem::Specification.new do |s|
 
   # specify any dependencies here; for example:
   s.add_development_dependency "rspec"
-  s.add_development_dependency "mocha"
-  s.add_development_dependency "builder"
-  
-  s.add_development_dependency "ruby-debug"
 
   
-  s.add_runtime_dependency "elibri_onix_dict"
-  s.add_runtime_dependency 'elibri_api_client'
+  s.add_development_dependency "ruby-debug"
+#  s.add_development_dependency "elibri_onix_mocks"
+
 end

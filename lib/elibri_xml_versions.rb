@@ -10,38 +10,10 @@ module Elibri
   
   class XmlVersions
     
-    #TODO: wyciagnac do innego pliku
-    ATTRIBS = [:elibri_dialect, :height, :width, :thickness, :weight, :ean, :isbn13, :number_of_pages, :duration, 
-                        :file_size, :publisher_name, :publisher_id, :imprint_name, :current_state, :reading_age_from, :reading_age_to, 
-                        :table_of_contents, :description, :reviews, :excerpts, :series, :title, :subtitle, :collection_title,
-                        :collection_part, :full_title, :original_title, :trade_title, :parsed_publishing_date, 
-                        #specific for RELEASE 3_0
-                        :cover_type, :cover_price, :vat, :pkwiu,
-                        :record_reference, :notification_type, :deletion_text,
-                        
-                        ]
-                        
-    TREE_ATTRIBS = [:reviews, :identifiers, :roxml_references, :title_details]
-#      :reviews => [:artificial_id, :type_onix_code, :text, :text_author, :updated_at,
-#                                           :exportable?, :is_a_review?, :resource_link]
-#                    }
 
     SKIPPED_ATTRIBS = ["@opts", "@default_namespace", "@instance", "@roxml_references"]
                         
-    COVER_TYPES= [      1  => 'gąbka',
-                        2 => 'kartonowa',
-                        3 => 'kartonowa foliowana',
-                        4 => 'miękka',
-                        5 => 'miękka ze skrzydełkami',
-                        6 => 'plastikowa',
-                        7 => 'skórzana',
-                        8 => 'twarda',
-                        9 => 'twarda z obwolutą',
-                        10 => 'twarda lakierowana']
-                        
-    HARDBACK = 8
-    PLASTIC = 6
-    PAPERBACK = 4
+
     
     attr_accessor :a, :b
     
@@ -175,7 +147,7 @@ module Elibri
           attrib = attrib.gsub("@", "").to_sym
           if object.send(attrib).is_a? Array
             result << calculate_hash(object.send(attrib))
-          elsif object.send(attrib).is_a?(String) || object.send(attrib).is_a?(Integer) || object.send(attrib).is_a?(Fixnum) || object.send(attrib).is_a?(Symbol)
+          elsif object.send(attrib).is_a?(String) || object.send(attrib).is_a?(Numeric) || object.send(attrib).is_a?(Fixnum) || object.send(attrib).is_a?(Symbol)
             result << object.send(attrib)
           else
             result << calculate_hash(object.send(attrib))

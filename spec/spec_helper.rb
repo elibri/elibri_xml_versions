@@ -3,14 +3,16 @@ require 'bundler/setup'
 
 require 'rspec'
 require 'ostruct'
-require 'mocha'
+#require 'mocha'
 require 'elibri_xml_versions' # and any other gems you need
+require 'elibri_onix_mocks'
+=begin
 require 'support/mocks/xml_mocks'
 require 'support/mocks/mock_method_missing'
 require 'support/generators/xml_generator'
 require 'support/xml_variant'
 require 'support/onix_helpers'
-
+=end
 
 
 require 'ruby-debug'
@@ -21,7 +23,7 @@ RSpec.configure do |config|
 end
 
 def onix_from_mock(sym, *args)
-  Elibri::ONIX::Release_3_0::ONIXMessage.from_xml(ONIX::XMLGenerator.new(XmlMocks::Examples.send(sym, *args)).to_s)
+  Elibri::ONIX::Release_3_0::ONIXMessage.from_xml(Elibri::ONIX::XMLGenerator.new(Elibri::XmlMocks::Examples.send(sym, *args)).to_s)
 end
 
 def xml_parse(xml_string)
@@ -29,5 +31,5 @@ def xml_parse(xml_string)
 end
 
 def generate_xml(mock)
-  ONIX::XMLGenerator.new(mock)
+  Elibri::ONIX::XMLGenerator.new(mock)
 end
