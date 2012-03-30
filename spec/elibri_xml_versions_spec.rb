@@ -98,7 +98,8 @@ describe Elibri::XmlVersions do
       :record_reference => :record_reference,
       :deletion_text => :deletion_text,
       :isbn_value => :isbn13,
-      :ean => :ean
+      :ean => :ean,
+      :deletion_text => :deletion_text
     }
 
     #strings
@@ -107,7 +108,7 @@ describe Elibri::XmlVersions do
       #, ,
        :publisher_name, :record_reference,
        :ean, :isbn_value,
-    #   :deletion_text, :or_title,
+       :deletion_text, :or_title,
     #  :trade_title, :pkwiu, :title, :subtitle, :edition_statement, :collection_part
     ].each do |symbol|
     
