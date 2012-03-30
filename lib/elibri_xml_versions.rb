@@ -25,7 +25,7 @@ module Elibri
 #                                           :exportable?, :is_a_review?, :resource_link]
 #                    }
 
-    SKIPPED_ATTRIBS = ["@opts", "@default_namespace", "@instance"]
+    SKIPPED_ATTRIBS = ["@opts", "@default_namespace", "@instance", "@roxml_references"]
                         
     COVER_TYPES= [      1  => 'gąbka',
                         2 => 'kartonowa',
@@ -89,16 +89,21 @@ module Elibri
         a.sort! { |x,y| x.id <=> y.id }
         b.sort! { |x,y| x.id <=> y.id }
         #obsługa dodania i usunięcia elementów
+        #problematyczne są części rekordu które nie są identyfikowalne jako identyczne :(
         if a.map(&:id) != b.map(&:id)
           deleted_ids = a.map(&:id) - b.map(&:id)
           added_ids = b.map(&:id) - a.map(&:id)
           deleted_ids.each do |id|
-            deleted << id  unless (a.find { |x| x.id == id }) || a.find { |x| x.id == id }.empty?
-            a.delete(a.find { |x| x.id == id })
+            if a.find { |x| x.id == id } && !a.find { |x| x.id == id }.blank?
+              deleted << id
+              a.delete(a.find { |x| x.id == id })
+            end
           end
           added_ids.each do |id|
-            added << id unless (b.find { |x| x.id == id }) || b.find { |x| x.id == id }.empty?            
-            b.delete(b.find { |x| x.id == id })
+            if b.find { |x| x.id == id } && !b.find { |x| x.id == id }.blank?
+              added << id
+              b.delete(b.find { |x| x.id == id })
+            end
           end
         end
         #obsługa różnych elementów w arrayu

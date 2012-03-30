@@ -21,7 +21,7 @@ describe Elibri::XmlVersions do
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [:record_reference]})
   end
-  
+ 
   it "should return no changes for same book elibri objects" do
     generated_product = onix_from_mock(:book_example)
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product.products.first)
@@ -42,4 +42,11 @@ describe Elibri::XmlVersions do
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [:record_reference]})
   end
   
+  it "should return added element when new review is added" do
+    generated_product = onix_from_mock(:book_example, {}, :other_texts => [XmlMocks::Examples.review_mock])
+    generated_product_2 = onix_from_mock(:book_example, {}, :other_texts => [XmlMocks::Examples.review_mock, XmlMocks::Examples.review_mock(:text_author => "lobuz lobuzialski")])
+    @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+    @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})
+  end
+
 end

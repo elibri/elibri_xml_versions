@@ -30,7 +30,7 @@ class XmlMocks
     end
 
 
-    def book_example(options = {})
+    def book_example(options = {}, extras = {})
       opt = {
         :state => "published",
         :public? => true,
@@ -70,7 +70,7 @@ class XmlMocks
         :audience_age_to => 25,
         # Trochę oszukujemy, żeby w XML`u pokazać wszystkie 3 opcje:
         :authorship_kind => stub('authorship_kind', :user_given? => true, :collective? => false, :no_contributor? => false),
-        :contributors => [
+        :contributors => extras[:contributors] || [
           stub('Contributor',
             :artificial_id => 257,
             :role_onix_code => Elibri::ONIX::Dict::Release_3_0::ContributorRole::TRANSLATOR,
@@ -95,7 +95,7 @@ class XmlMocks
         :collection => stub('PublisherCollection', :name => 'Nazwa kolekcji'),
         :edition_statement => 'wyd. 3, poprawione',
         :languages => [stub('Language', :language_onix_code => 'pol', :role_onix_code => Elibri::ONIX::Dict::Release_3_0::LanguageRole::LANGUAGE_OF_TEXT)],
-        :other_texts => [
+        :other_texts => extras[:other_texts] || [
           stub('OtherText',
                :artificial_id => 137,
                :type_onix_code => Elibri::ONIX::Dict::Release_3_0::OtherTextType::REVIEW,
@@ -108,12 +108,12 @@ class XmlMocks
               ).extend(MockMethodMissing)
         ],
         :series_membership_kind => stub('series_membership_kind', :user_given? => true),
-        :series_memberships => [
+        :series_memberships => extras[:series_memberships] || [
           stub('SeriesMembership', :series_name => 'Lektury szkolne', :number_within_series => '2')
         ],
         :facsimiles => [stub('Product', :publisher_name => 'PWN', :publisher_id => 12, :publisher_symbol => 'Tytuł dodruku', :isbn_value => '9788324705818')],
         :similar_products => [stub('Product', :publisher_name => 'WNT', :publisher_id => 13, :publisher_symbol => 'Tytuł podobnej książki', :isbn_value => '9788324799992')],
-        :attachments => [
+        :attachments => extras[:product_attachments] || [
           stub('ProductAttachment', 
                :id => 668,
                :attachment_type_code => Elibri::ONIX::Dict::Release_3_0::ResourceContentType::FRONT_COVER,
@@ -123,7 +123,7 @@ class XmlMocks
                :updated_at => Date.new(2011, 12, 01).to_time + 19.hours + 5.minutes + 28.seconds
               )
         ],
-        :product_availabilities => [
+        :product_availabilities => extras[:product_availabilities] || [
           stub('ProductAvailability',
                :supplier_identifier => 'GILD-123',
                :supplier_role_onix_code => Elibri::ONIX::Dict::Release_3_0::SupplierRole::PUB_NON_EXL_DIST,
@@ -549,7 +549,7 @@ class XmlMocks
 
 
     def onix_series_memberships_example
-      @onix_series_memberships_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :series_membership_kind => stub('series_membership_kind', :user_given? => true),
           :series_memberships => [
@@ -597,6 +597,45 @@ class XmlMocks
           :preview_exists? => true
         )
       end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
+    end
+    
+    
+    def contributor_mock(options = {})
+      opts = {
+        :artificial_id => 257,
+        :role_onix_code => Elibri::ONIX::Dict::Release_3_0::ContributorRole::AUTHOR,
+        :language_onix_code => 'pol',
+        :title => 'prof.',
+        :name => 'Henryk',
+        :last_name_prefix => 'von',
+        :last_name => 'Sienkiewicz',
+        :last_name_postfix => 'Ibrahim',
+        :biography => stub('OtherText', :text => 'Biografia Sienkiewicza', :exportable? => true, :is_a_review? => false, :resource_link => 'http://example').extend(MockMethodMissing),
+        :updated_at => Date.new(2011, 11, 04).to_time + 10.hours + 5.minutes + 27.seconds
+      }.merge(options)
+      mock('Contributor').tap do |contributor|
+        contributor.stubs(
+          opts
+        )
+      end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
+    end
+    
+    def review_mock(options = {})
+      opts = {
+        :artificial_id => 137,
+        :type_onix_code => Elibri::ONIX::Dict::Release_3_0::OtherTextType::REVIEW,
+        :text => 'Recenzja książki',
+        :text_author => 'Jan Kowalski', 
+        :updated_at => Date.new(2011, 12, 03).to_time + 19.hours + 5.minutes + 28.seconds,
+        :exportable? => true,
+        :is_a_review? => true,
+        :resource_link => 'http://example'
+      }.merge(options)
+      mock('OtherText').tap do |other_text|
+        other_text.stubs(
+          opts
+        )
+      end.extend(MockMethodMissing)
     end
 
   end

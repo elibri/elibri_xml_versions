@@ -20,8 +20,8 @@ RSpec.configure do |config|
   # some (optional) config here
 end
 
-def onix_from_mock(sym, options = {})
-  Elibri::ONIX::Release_3_0::ONIXMessage.from_xml(ONIX::XMLGenerator.new(XmlMocks::Examples.send(sym, options)).to_s)
+def onix_from_mock(sym, *args)
+  Elibri::ONIX::Release_3_0::ONIXMessage.from_xml(ONIX::XMLGenerator.new(XmlMocks::Examples.send(sym, *args)).to_s)
 end
 
 def xml_parse(xml_string)
