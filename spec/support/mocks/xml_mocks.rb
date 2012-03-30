@@ -163,7 +163,7 @@ class XmlMocks
     end
 
     def onix_record_identifiers_example
-      @onix_record_identifiers_example ||= mock("product").tap do |product|
+      mock("product").tap do |product|
         product.stubs(
           :state => "published",
           :title => "Nielegalni",
@@ -187,7 +187,7 @@ class XmlMocks
 
 
     def onix_product_form_example
-      @onix_product_form_example ||= mock("product").tap do |product|
+      mock("product").tap do |product|
         product.stubs(
           :title => "Nielegalni",
           :ean => nil,
@@ -204,7 +204,7 @@ class XmlMocks
     
 
     def onix_epub_details_example
-      @onix_epub_details_example ||= mock("product").tap do |product|
+      mock("product").tap do |product|
         product.stubs(
           :title => "Nielegalni",
           :ean => nil,
@@ -222,7 +222,7 @@ class XmlMocks
 
 
     def onix_categories_example
-      @onix_categories_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
          product.stubs(
             :publisher_name => "Buchmann",
             :publisher_id => 15,
@@ -235,7 +235,7 @@ class XmlMocks
     end
 
     def onix_languages_example
-      @onix_languages_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :languages => [
             stub('Language', :language_onix_code => 'pol', :role_onix_code => Elibri::ONIX::Dict::Release_3_0::LanguageRole::LANGUAGE_OF_TEXT),
@@ -247,7 +247,7 @@ class XmlMocks
 
 
     def onix_measurement_example
-      @onix_measurement_example ||= mock("product").tap do |product|
+      mock("product").tap do |product|
         product.stubs(
           :title => "Katowice, mapa",
           :ean => nil,
@@ -267,7 +267,7 @@ class XmlMocks
 
 
     def onix_sale_restrictions_example
-      @onix_sale_restrictions_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :sale_restricted? => true,
           :sale_restricted_for => 'Empik',
@@ -281,7 +281,7 @@ class XmlMocks
 
 
     def onix_audience_range_example
-      @onix_audience_range_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :audience_age_from => 7,
           :audience_age_to => 10 
@@ -291,7 +291,7 @@ class XmlMocks
 
 
     def onix_publisher_info_example
-      @onix_publisher_info_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :publisher_name => 'G+J Gruner+Jahr Polska',
           :publisher_id => 14,
@@ -303,7 +303,7 @@ class XmlMocks
 
 
     def onix_subjects_example
-      @onix_subjects_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :elibri_product_category1_id => 1110,
           :elibri_product_category2_id => 491
@@ -313,7 +313,7 @@ class XmlMocks
 
 
     def onix_edition_example
-      @onix_edition_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :edition_statement => 'wyd. 3, poprawione'
         )
@@ -322,8 +322,7 @@ class XmlMocks
 
 
     def onix_ebook_extent_example
-      @onix_ebook_extent_example ||= 
-        basic_product.tap do |product|
+      basic_product.tap do |product|
           product.stubs(
             :example_title => 'E-book (rozmiar pliku, ilość stron i obrazków)',
             :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::EBOOK,
@@ -335,7 +334,6 @@ class XmlMocks
     end
 
     def onix_audiobook_extent_example 
-      @onix_audiobook_extent_example ||=
         basic_product.tap do |product|
           product.stubs(
             :example_title => 'Audio CD z długością ścieżki',
@@ -346,7 +344,6 @@ class XmlMocks
     end
  
     def onix_no_contributors_example
-      @onix_no_contributors_example ||= 
         basic_product.tap do |product|
           product.stubs(
             :example_title => 'Brak autorów',
@@ -356,7 +353,6 @@ class XmlMocks
     end
 
     def onix_collective_work_example
-      @onix_collective_work_example ||= 
         basic_product.tap do |product|
           product.stubs(
             :example_title => 'Praca zbiorowa',
@@ -366,7 +362,6 @@ class XmlMocks
     end
 
     def onix_contributors_example
-      @onix_contributors_example ||= 
         basic_product.tap do |product|
           product.stubs(
             :example_title => 'Wyszczególnieni autorzy',
@@ -398,7 +393,7 @@ class XmlMocks
     end
 
     def onix_announced_product_example
-      @onix_announced_product_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :state => "announced",
           :publisher_symbol => "Światu nie mamy czego zazdrościć.",
@@ -412,7 +407,7 @@ class XmlMocks
     end
 
     def onix_preorder_product_example
-      @onix_preorder_product_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :state => "preorder",
           :publication_year => 2011,
@@ -423,7 +418,7 @@ class XmlMocks
     end
 
     def onix_published_product_example
-      @onix_published_product_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :state => "published",
           :publication_year => 2011,
@@ -433,7 +428,7 @@ class XmlMocks
     end
 
     def onix_out_of_print_product_example
-      @onix_out_of_print_product_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :state => "out_of_print"
         )
@@ -441,7 +436,7 @@ class XmlMocks
     end
 
     def onix_titles_example
-      @onix_titles_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :publisher_symbol => "Światu nie mamy czego zazdrościć.",
           :or_title => "Nothing to Envy: Ordinary Lives in North Korea",
@@ -453,7 +448,7 @@ class XmlMocks
     end
 
     def onix_title_with_collection_example
-      @onix_title_with_collection_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :publisher_symbol => "Thorgal 33 Statek-Miecz TWARDA",
           :or_title => "Thorgal: Le Bateau-Sabre",
@@ -467,7 +462,7 @@ class XmlMocks
 
 
     def onix_texts_example
-      @onix_texts_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :other_texts => [
             OtherText.new(
@@ -505,7 +500,7 @@ class XmlMocks
 
 
     def onix_related_products_example
-      @onix_related_products_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :facsimiles => [stub('Product', :publisher_name => 'PWN', :publisher_id => 11, :publisher_symbol => 'Tytuł dodruku', :isbn_value => '9788324705818')],
           :similar_products => [stub('Product', :publisher_name => 'WNT', :publisher_id => 12, :publisher_symbol => 'Tytuł podobnej książki', :isbn_value => '9788324799992')]
@@ -515,7 +510,7 @@ class XmlMocks
 
 
     def onix_supply_details_example
-      @onix_supply_details_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :product_availabilities => [
             stub('ProductAvailability',
@@ -567,7 +562,7 @@ class XmlMocks
 
 
     def onix_supporting_resources_example
-      @onix_supporting_resources_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :attachments => [
             stub('ProductAttachment', 
@@ -593,7 +588,7 @@ class XmlMocks
 
 
     def onix_elibri_extensions_example
-      @onix_elibri_extensions_example ||= basic_product.tap do |product|
+      basic_product.tap do |product|
         product.stubs(
           :cover_type_id => Product::CoverType::PAPERBACK,
           :vat => 5,
