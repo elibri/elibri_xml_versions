@@ -1,6 +1,7 @@
 require "elibri_xml_versions/version"
 require 'elibri_api_client'
 require 'elibri_onix_dict'
+require 'digest/sha2'
 
 
 
@@ -138,6 +139,10 @@ module Elibri
       return {:deleted => deleted, :added => added, :changes => changes}
     end
     
+  end
+  
+  def calculate_yaml_hash(object)
+    Digest::SHA512.hexdigest(object.to_yaml)
   end
   
 end
