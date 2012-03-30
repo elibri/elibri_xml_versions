@@ -102,9 +102,10 @@ module Elibri
 =end       
         #obsługa dodania i usunięcia elementów
         #problematyczne są części rekordu które nie są identyfikowalne jako identyczne :(
-#        a_m = a.map { |x| calculate_yaml_hash(x) }
-#        b_m = b.map { |x| calculate_yaml_hash(x) }
-        if a.map(&:id) != b.map(&:id)
+        a_m = a.map { |x| calculate_hash(x) }
+        b_m = b.map { |x| calculate_hash(x) }
+     #   if a.map(&:id) != b.map(&:id)
+        if a_m != b_m
           deleted_ids = a.map(&:id) - b.map(&:id)
           added_ids = b.map(&:id) - a.map(&:id)
           deleted_ids.each do |id|
@@ -152,11 +153,31 @@ module Elibri
       return {:deleted => deleted, :added => added, :changes => changes}
     end
     
-    def calculate_yaml_hash(object)
-      begin
-        Digest::SHA512.hexdigest(Marshal.dump(object))
-      rescue Exception
-        Digest::SHA512.hexdigest("#{rand(500000)}-#{DateTime.now.to_s}")
+    def calculate_hash(object)
+      result = []
+      if object.is_a? Array
+        object.each { |x| result << calculate_hash(x) }
+      else
+        object.instance_variables.each do |attrib|
+          next if SKIPPED_ATTRIBS.include? attrib
+          attrib = attrib.gsub("@", "").to_sym
+          if object.send(attrib).is_a? Array
+            result << calculate_hash(object.send(attrib))
+          elsif object.send(attrib).is_a?(String) || object.send(attrib).is_a?(Integer) || object.send(attrib).is_a?(Fixnum) || object.send(attrib).is_a?(Symbol)
+            result << object.send(attrib)
+          else
+            result << calculate_hash(object.send(attrib))
+          end
+        end
+      end
+      return Digest::SHA1.hexdigest(result.join("-"))
+    end
+    
+    def convert_arr_to_hash(arr)
+      {}.tap do |hash|
+        arr.each do |pair|
+          hash[pair.keys.first] = pair.values.first
+        end
       end
     end
     

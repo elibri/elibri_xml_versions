@@ -637,6 +637,7 @@ class XmlMocks
         )
       end.extend(MockMethodMissing)
     end
+    
 
   end
 
