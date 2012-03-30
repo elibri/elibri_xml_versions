@@ -155,7 +155,7 @@ class XmlMocks
               )
         ]
       }.merge(options)
-      @product_example ||= mock("product").tap do |product|
+      mock("product").tap do |product|
         product.stubs(
           opt
         )

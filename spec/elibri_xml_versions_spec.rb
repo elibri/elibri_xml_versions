@@ -36,10 +36,10 @@ describe Elibri::XmlVersions do
   end
   
   it "should return change for different book elibri objects" do
-    generated_product = onix_from_mock(:book_example, :isbn_value => '9788324799992')
-    generated_product_2 = onix_from_mock(:book_example, :isbn_value => '9788324799991')
+    generated_product = onix_from_mock(:book_example, :record_reference => 'fdb8fa072be774d97a97')
+    generated_product_2 = onix_from_mock(:book_example, :record_reference => 'fdb8fa072be774d97a95')
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
-    @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [:isbn_value]})
+    @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [:record_reference]})
   end
   
 end
