@@ -150,7 +150,7 @@ module Elibri
             added << {attrib, ret[:added]} if !ret[:added].blank?
             deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
           else
-            if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Integer) || a.send(attrib).is_a?(NilClass) || b.send(attrib).is_a?(NilClass))
+            if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Numeric) || a.send(attrib).is_a?(NilClass) || b.send(attrib).is_a?(NilClass))
               changes << attrib if a.send(attrib) != b.send(attrib)
             else
               #klasa zlozona

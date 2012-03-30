@@ -38,7 +38,7 @@ class XmlMocks
         :cover_type_id => Elibri::XmlVersions::PAPERBACK,
         :publishing_status_onix_code => Elibri::ONIX::Dict::Release_3_0::PublishingStatusCode::ACTIVE,
         :publication_year => 2011,
-        :publication_mont => 2,
+        :publication_month => 2,
         :publication_day => 10,
         :publisher_symbol => "W pustyni i w puszczy",
         :record_reference => "fdb8fa072be774d97a97",
@@ -664,7 +664,18 @@ class XmlMocks
       end.extend(MockMethodMissing)
     end
     
-
-  end
+    def imprint_mock(options = {})
+      opts =
+      {
+        :name => 'National Geographic'
+      }.merge(options)
+      mock('Imprint').tap do |impr|
+        impr.stubs(
+          opts
+        )
+      end.extend(MockMethodMissing)
+    end
+      
+    end
 
 end
