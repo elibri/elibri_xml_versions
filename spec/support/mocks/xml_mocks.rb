@@ -162,25 +162,28 @@ class XmlMocks
       end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
 
-    def onix_record_identifiers_example
+    def onix_record_identifiers_example(options = {}, extras = {})
+      opt = {
+        :state => "published",
+        :title => "Nielegalni",
+        :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::BOOK,
+        :record_reference => "fdb8fa072be774d97a97",
+        :ean => '9788324788882',
+        :isbn_value => '9788324799992',
+        :public? => true,
+        :product_availabilities => extras[:product_availabilities] || [
+          stub('ProductAvailability', :supplier_identifier => '355006',
+               :product_availability_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductAvailabilityType::IN_STOCK,
+               :stock_info => stub('stock_info', :exact_info? => true, :on_hand => '1000'),
+               :price_infos => [ stub('PriceInfo', :minimum_order_quantity => 20, :amount => 12.99, :vat => 7, :currency_code => 'PLN') ],
+               :supplier => stub('Supplier', :name => "Olesiejuk",
+                                             :nip => "527-22-62-432", :phone => "22 721 70 07", :email => "", :website => "www.olesiejuk.pl"),
+               :supplier_role_onix_code => Elibri::ONIX::Dict::Release_3_0::SupplierRole::WHOLESALER)
+        ]
+      }.merge(options)
       mock("product").tap do |product|
         product.stubs(
-          :state => "published",
-          :title => "Nielegalni",
-          :product_form_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductFormCode::BOOK,
-          :record_reference => "fdb8fa072be774d97a97",
-          :ean => '9788324788882',
-          :isbn_value => '9788324799992',
-          :public? => true,
-          :product_availabilities => [
-            stub('ProductAvailability', :supplier_identifier => '355006',
-                 :product_availability_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductAvailabilityType::IN_STOCK,
-                 :stock_info => stub('stock_info', :exact_info? => true, :on_hand => '1000'),
-                 :price_infos => [ stub('PriceInfo', :minimum_order_quantity => 20, :amount => 12.99, :vat => 7, :currency_code => 'PLN') ],
-                 :supplier => stub('Supplier', :name => "Olesiejuk",
-                                               :nip => "527-22-62-432", :phone => "22 721 70 07", :email => "", :website => "www.olesiejuk.pl"),
-                 :supplier_role_onix_code => Elibri::ONIX::Dict::Release_3_0::SupplierRole::WHOLESALER)
-          ]
+          opt
         )
       end.extend(OnixHelpers::InstanceMethods).extend(MockMethodMissing)
     end
@@ -635,6 +638,29 @@ class XmlMocks
         other_text.stubs(
           opts
         )
+      end.extend(MockMethodMissing)
+    end
+    
+    def supply_detail_mock(options = {})
+      opts = 
+      {
+       :supplier_identifier => 'GILD-123',
+       :supplier_role_onix_code => Elibri::ONIX::Dict::Release_3_0::SupplierRole::PUB_NON_EXL_DIST,
+       :product_availability_onix_code => Elibri::ONIX::Dict::Release_3_0::ProductAvailabilityType::IN_STOCK,
+       :supplier => stub('Supplier',
+                         :name => 'Gildia.pl',
+                         :nip => '521-33-59-408',
+                         :phone => '22 631 40 83',
+                         :email => 'bok@gildia.pl',
+                         :website => 'http://gildia.pl'
+                        ),
+       :stock_info => stub('stock_info', :exact_info? => true, :on_hand => '1000'),
+       :price_infos => [ stub('PriceInfo', :minimum_order_quantity => 20, :amount => 12.99, :vat => 7, :currency_code => 'PLN') ]
+      }.merge(options)
+       mock('ProductAvailability').tap do |aval|
+         aval.stubs(
+          opts
+          )
       end.extend(MockMethodMissing)
     end
     

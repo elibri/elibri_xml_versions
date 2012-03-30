@@ -20,14 +20,12 @@ describe Elibri::XmlVersions do
     generated_product = onix_from_mock(:basic_product, :record_reference => 'fdb8fa072be774d97a97')
     generated_product_2 = onix_from_mock(:basic_product, :record_reference => 'fdb8fa072be774d97a95')
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
-#    @elibri_xml_versions.diff[:changes].should eq([:record_reference])
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [:record_reference]})
   end
  
   it "should return no changes for same book elibri objects" do
     generated_product = onix_from_mock(:book_example)
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product.products.first)
-#    @elibri_xml_versions.diff[:changes].should eq([])
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
   end
   
@@ -36,14 +34,14 @@ describe Elibri::XmlVersions do
     generated_product = onix_from_mock(:book_example, {}, :other_texts => [mock])
     generated_product_2 = onix_from_mock(:book_example, {}, :other_texts => [mock])
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
-#    @elibri_xml_versions.diff[:changes].should eq([])
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
   end
   
   it "should return change for different book elibri objects" do
-    mock = XmlMocks::Examples.review_mock
-    generated_product = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a97'}, :other_texts => [mock])
-    generated_product_2 = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a95'}, :other_texts => [mock])
+    review_mock = XmlMocks::Examples.review_mock
+    supply_details = XmlMocks::Examples.supply_detail_mock
+    generated_product = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a97'}, :other_texts => [review_mock], :product_availabilities => [supply_details])
+    generated_product_2 = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a95'}, :other_texts => [review_mock], :product_availabilities => [supply_details])
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [:record_reference]})
   end
@@ -55,5 +53,23 @@ describe Elibri::XmlVersions do
     result = @elibri_xml_versions.diff
     (@elibri_xml_versions.convert_arr_to_hash result[:added])[:reviews].count.should eq(2)
     (@elibri_xml_versions.convert_arr_to_hash result[:deleted])[:reviews].count.should eq(1)
-  end
+    (@elibri_xml_versions.convert_arr_to_hash result[:added])[:text_contents].count.should eq(2)
+    (@elibri_xml_versions.convert_arr_to_hash result[:deleted])[:text_contents].count.should eq(1)
+    result[:added].count.should eq(2)
+    result[:deleted].count.should eq(2)
+    end
+    
+    it "should return no changes for same onix_record_identifiers_example objects" do
+      generated_product = onix_from_mock(:onix_record_identifiers_example)
+      @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product.products.first)
+      @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
+    end
+    
+    it "should return no changes for double generated onix_record_identifiers_example objects" do
+      generated_product = onix_from_mock(:onix_record_identifiers_example)
+      generated_product_2 = onix_from_mock(:onix_record_identifiers_example)      
+      @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+      @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
+    end
+    
 end
