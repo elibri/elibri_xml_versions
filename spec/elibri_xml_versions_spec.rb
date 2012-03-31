@@ -44,8 +44,8 @@ describe Elibri::XmlVersions do
 
   it "should return no changes for same book elibri objects double generated" do
     mock = Elibri::XmlMocks::Examples.review_mock
-    generated_product = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge(:other_texts => [mock]) )
-    generated_product_2 = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge(:other_texts => [mock]) )
+    generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [mock]) )
+    generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [mock]) )
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
   end
@@ -53,15 +53,15 @@ describe Elibri::XmlVersions do
   it "should return change for different book elibri objects" do
     review_mock = Elibri::XmlMocks::Examples.review_mock
     supply_details = Elibri::XmlMocks::Examples.supply_detail_mock
-    generated_product = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a97'}, RAW_EXTRAS.merge(:other_texts => [review_mock], :product_availabilities => [supply_details]))
-    generated_product_2 = onix_from_mock(:book_example, {:record_reference => 'fdb8fa072be774d97a95'}, RAW_EXTRAS.merge(:other_texts => [review_mock], :product_availabilities => [supply_details]))
+    generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [review_mock], :product_availabilities => [supply_details], :record_reference => 'fdb8fa072be774d97a97'))
+    generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [review_mock], :product_availabilities => [supply_details], :record_reference => 'fdb8fa072be774d97a95'))
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => [:record_reference]})
   end
 
   it "should return added element when new review is added" do
-    generated_product = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge(:other_texts => [Elibri::XmlMocks::Examples.review_mock]))
-    generated_product_2 = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge(:other_texts => [Elibri::XmlMocks::Examples.review_mock, Elibri::XmlMocks::Examples.review_mock(:text_author => "lobuz lobuzialski")]))
+    generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [Elibri::XmlMocks::Examples.review_mock]))
+    generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [Elibri::XmlMocks::Examples.review_mock, Elibri::XmlMocks::Examples.review_mock(:text_author => "lobuz lobuzialski")]))
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     result = @elibri_xml_versions.diff
     (@elibri_xml_versions.convert_arr_to_hash result[:added])[:reviews].count.should eq(2)
@@ -122,8 +122,8 @@ describe Elibri::XmlVersions do
     
       it "should return change when #{symbol} change in two books objects (one with default settings)" do
         string = "ehdroruwnm"
-        generated_product = onix_from_mock(:book_example, {}, RAW_EXTRAS)
-        generated_product_2 = onix_from_mock(:book_example, {symbol => string}, RAW_EXTRAS)
+        generated_product = onix_from_mock(:book_example, RAW_EXTRAS)
+        generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(symbol => string) )
         @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
         @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol])
       end
@@ -133,8 +133,8 @@ describe Elibri::XmlVersions do
         string2 = "TOXYAUEJ"
         review_mock = Elibri::XmlMocks::Examples.review_mock
         supply_details = Elibri::XmlMocks::Examples.supply_detail_mock
-        generated_product = onix_from_mock(:book_example, {symbol => string}, RAW_EXTRAS)
-        generated_product_2 = onix_from_mock(:book_example, {symbol => string2}, RAW_EXTRAS)
+        generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge(symbol => string))
+        generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(symbol => string2))
         @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
         @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol])
       end
@@ -171,8 +171,8 @@ describe Elibri::XmlVersions do
     
     it "should return change when #{symbol} change in two books objects (one with default settings)" do
       string = 52
-      generated_product = onix_from_mock(:book_example, {}, RAW_EXTRAS)
-      generated_product_2 = onix_from_mock(:book_example, {symbol => string}, RAW_EXTRAS)
+      generated_product = onix_from_mock(:book_example, RAW_EXTRAS)
+      generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(symbol => string))
       @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
       @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol])
     end
@@ -182,8 +182,8 @@ describe Elibri::XmlVersions do
       string2 = 44
       review_mock = Elibri::XmlMocks::Examples.review_mock
       supply_details = Elibri::XmlMocks::Examples.supply_detail_mock
-      generated_product = onix_from_mock(:book_example, {symbol => string}, RAW_EXTRAS)
-      generated_product_2 = onix_from_mock(:book_example, {symbol => string2}, RAW_EXTRAS)
+      generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge(symbol => string))
+      generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(symbol => string2))
       @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
       @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol])
     end
@@ -224,8 +224,8 @@ describe Elibri::XmlVersions do
   it "should detect change in object inside book product" do
     imprint = Elibri::XmlMocks::Examples.imprint_mock
     imprint_2 = Elibri::XmlMocks::Examples.imprint_mock(:name => 'second')
-    generated_product = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge({:imprint => imprint}))
-    generated_product_2 = onix_from_mock(:book_example, {}, RAW_EXTRAS.merge({:imprint => imprint_2}))
+    generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge({:imprint => imprint}))
+    generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge({:imprint => imprint_2}))
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff[:changes].should include({:imprint => [:name]})
   end
