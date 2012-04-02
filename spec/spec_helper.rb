@@ -15,7 +15,6 @@ require 'support/onix_helpers'
 =end
 
 
-require 'ruby-debug'
 
 
 RSpec.configure do |config|

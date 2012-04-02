@@ -1,3 +1,5 @@
+#encoding: UTF-8
+
 require "elibri_xml_versions/version"
 require 'elibri_api_client'
 require 'elibri_onix_dict'
@@ -115,21 +117,21 @@ module Elibri
       else
         a.instance_variables.each do |attrib|
           next if SKIPPED_ATTRIBS.include? attrib
-          attrib = attrib.gsub("@", "").to_sym
+          attrib = attrib.to_s.gsub("@", "").to_sym
           if a.send(attrib).is_a? Array
             ret = check_tree(a.send(attrib), b.send(attrib))
-            changes << {attrib, ret[:changes]} if !ret[:changes].blank?
-            added << {attrib, ret[:added]} if !ret[:added].blank?
-            deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
+            changes << {attrib => ret[:changes]} if !ret[:changes].blank?
+            added << {attrib => ret[:added]} if !ret[:added].blank?
+            deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
           else
             if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Numeric) || a.send(attrib).is_a?(NilClass) || b.send(attrib).is_a?(NilClass))
               changes << attrib if a.send(attrib) != b.send(attrib)
             else
               #klasa zlozona
               ret = check_tree(a.send(attrib), b.send(attrib))
-              changes << {attrib, ret[:changes]} if !ret[:changes].blank?
-              added << {attrib, ret[:added]} if !ret[:added].blank?
-              deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
+              changes << {attrib => ret[:changes]} if !ret[:changes].blank?
+              added << {attrib => ret[:added]} if !ret[:added].blank?
+              deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
             end
           end
         end
@@ -144,7 +146,7 @@ module Elibri
       else
         object.instance_variables.each do |attrib|
           next if SKIPPED_ATTRIBS.include? attrib
-          attrib = attrib.gsub("@", "").to_sym
+          attrib = attrib.to_s.gsub("@", "").to_sym
           if object.send(attrib).is_a? Array
             result << calculate_hash(object.send(attrib))
           elsif object.send(attrib).is_a?(String) || object.send(attrib).is_a?(Numeric) || object.send(attrib).is_a?(Fixnum) || object.send(attrib).is_a?(Symbol)
