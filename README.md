@@ -2,6 +2,7 @@
 
 Gem created for comparing eLibri xml objects.
 More info coming soon.
+Currently working and tested only on REE.
 
 Basic usage:
 ``Elibri::XmlVersions.new(product_ver1, product_ver2).diff``
