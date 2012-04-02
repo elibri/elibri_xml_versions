@@ -47,7 +47,8 @@ describe Elibri::XmlVersions do
     generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [mock]) )
     generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [mock]) )
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
-    @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
+    result = @elibri_xml_versions.diff
+    (@elibri_xml_versions.convert_arr_to_hash result[:changes]).count.should eq(0) 
   end
 
   it "should return change for different book elibri objects" do
@@ -71,7 +72,7 @@ describe Elibri::XmlVersions do
     result[:added].count.should eq(2)
     result[:deleted].count.should eq(2)
     end
-  
+
     it "should return no changes for same onix_record_identifiers_example objects" do
       generated_product = onix_from_mock(:onix_record_identifiers_example)
       @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product.products.first)
@@ -229,5 +230,5 @@ describe Elibri::XmlVersions do
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff[:changes].should include({:imprint => [:name]})
   end
-  
+ 
 end
