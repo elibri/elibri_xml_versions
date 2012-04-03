@@ -73,8 +73,14 @@ module Elibri
       deleted = []
       added = []
       if a.is_a? Array
-        a.sort! { |x,y| x.id <=> y.id }
-        b.sort! { |x,y| x.id <=> y.id }
+        if a.all? { |x| x.instance_variables.include? "@import_id"}
+          a.sort! {|x,y| x.import_id <=> y.import_id }
+          b.sort! {|x,y| x.import_id <=> y.import_id }
+          a_m = a.map { |x| x.import_id }
+          b_m = b.map { |x| x.import_id }
+        else
+          a.sort! { |x,y| x.id <=> y.id }
+          b.sort! { |x,y| x.id <=> y.id }
 =begin
         ch = []
         del = []
@@ -88,8 +94,9 @@ module Elibri
 =end       
         #obsługa dodania i usunięcia elementów
         #problematyczne są części rekordu które nie są identyfikowalne jako identyczne :(
-        a_m = a.map { |x| calculate_hash(x) }
-        b_m = b.map { |x| calculate_hash(x) }
+          a_m = a.map { |x| calculate_hash(x) }
+          b_m = b.map { |x| calculate_hash(x) }
+        end
      #   if a.map(&:id) != b.map(&:id)
         if a_m != b_m
           deleted_ids = a.map(&:id) - b.map(&:id)
