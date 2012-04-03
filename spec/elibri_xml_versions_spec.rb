@@ -69,8 +69,6 @@ describe Elibri::XmlVersions do
     (@elibri_xml_versions.convert_arr_to_hash result[:deleted])[:reviews].count.should eq(1)
     (@elibri_xml_versions.convert_arr_to_hash result[:added])[:text_contents].count.should eq(2)
     (@elibri_xml_versions.convert_arr_to_hash result[:deleted])[:text_contents].count.should eq(1)
-    result[:added].count.should eq(2)
-    result[:deleted].count.should eq(2)
     end
 
     it "should return no changes for same onix_record_identifiers_example objects" do
