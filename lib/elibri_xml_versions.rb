@@ -14,6 +14,7 @@ module Elibri
     
 
     SKIPPED_ATTRIBS = ["@opts", "@default_namespace", "@instance", "@roxml_references"]
+    SKIPPED_2 = ["@id", "@id_before_type_cast"]
                         
 
     
@@ -75,7 +76,7 @@ module Elibri
       if a.is_a? Array
         a.sort! { |x,y| x.id <=> y.id }
         b.sort! { |x,y| x.id <=> y.id }
-        if a.all? { |x| x.instance_variables.include? "@id_before_type_cast"}
+        if a.all? { |x| x.instance_variables.include? "@id_before_type_cast"} || a.all? { |x| x.instance_variables.include? "@import_id"}
           a_m = a.map { |x| x.id }
           b_m = b.map { |x| x.id }
         else
@@ -125,18 +126,18 @@ module Elibri
           attrib = attrib.to_s.gsub("@", "").to_sym
           if a.send(attrib).is_a? Array
             ret = check_tree(a.send(attrib), b.send(attrib))
-            changes << {attrib => ret[:changes]} if !ret[:changes].blank?
-            added << {attrib => ret[:added]} if !ret[:added].blank?
-            deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
+            changes << {attrib, ret[:changes]} if !ret[:changes].blank?
+            added << {attrib, ret[:added]} if !ret[:added].blank?
+            deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
           else
             if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Numeric) || a.send(attrib).is_a?(NilClass) || b.send(attrib).is_a?(NilClass))
               changes << attrib if a.send(attrib) != b.send(attrib)
             else
               #klasa zlozona
               ret = check_tree(a.send(attrib), b.send(attrib))
-              changes << {attrib => ret[:changes]} if !ret[:changes].blank?
-              added << {attrib => ret[:added]} if !ret[:added].blank?
-              deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
+              changes << {attrib, ret[:changes]} if !ret[:changes].blank?
+              added << {attrib, ret[:added]} if !ret[:added].blank?
+              deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
             end
           end
         end
@@ -151,6 +152,7 @@ module Elibri
       else
         object.instance_variables.each do |attrib|
           next if SKIPPED_ATTRIBS.include? attrib
+          next if SKIPPED_2.include? attrib
           attrib = attrib.to_s.gsub("@", "").to_sym
           if object.send(attrib).is_a? Array
             result << calculate_hash(object.send(attrib))
