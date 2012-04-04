@@ -8,8 +8,10 @@ Gem::Specification.new do |s|
   s.authors     = ["Piotr Szmielew"]
   s.email       = ["p.szmielew@ava.waw.pl"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{Gem created for comparing eLibri xml objects.}
+  s.description = %q|Gem created for comparing eLibri xml objects. More info coming soon. Currently working and tested only on REE.
+Basic usage: Elibri::XmlVersions.new(product_ver1, product_ver2).diff
+it will return hash: {:added => [], :changes => [], :deleted => []}|
 
   s.rubyforge_project = "elibri_xml_versions"
 
