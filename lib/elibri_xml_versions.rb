@@ -74,6 +74,8 @@ module Elibri
       deleted = []
       added = []
       if a.is_a? Array
+        a.compact!
+        b.compact!
         a.sort! { |x,y| x.id <=> y.id }
         b.sort! { |x,y| x.id <=> y.id }
         if a.all? { |x| x.instance_variables.include? "@id_before_type_cast"} || a.all? { |x| x.instance_variables.include? "@import_id"}
