@@ -128,18 +128,18 @@ module Elibri
           attrib = attrib.to_s.gsub("@", "").to_sym
           if a.send(attrib).is_a? Array
             ret = check_tree(a.send(attrib), b.send(attrib))
-            changes << {attrib, ret[:changes]} if !ret[:changes].blank?
-            added << {attrib, ret[:added]} if !ret[:added].blank?
-            deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
+            changes << {attrib => ret[:changes]} if !ret[:changes].blank?
+            added << {attrib => ret[:added]} if !ret[:added].blank?
+            deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
           else
             if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Numeric) || a.send(attrib).is_a?(NilClass) || b.send(attrib).is_a?(NilClass))
               changes << attrib if a.send(attrib) != b.send(attrib)
             else
               #klasa zlozona
               ret = check_tree(a.send(attrib), b.send(attrib))
-              changes << {attrib, ret[:changes]} if !ret[:changes].blank?
-              added << {attrib, ret[:added]} if !ret[:added].blank?
-              deleted << {attrib, ret[:deleted]} if !ret[:deleted].blank?
+              changes << {attrib => ret[:changes]} if !ret[:changes].blank?
+              added << {attrib => ret[:added]} if !ret[:added].blank?
+              deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
             end
           end
         end
