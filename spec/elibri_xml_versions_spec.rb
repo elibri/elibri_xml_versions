@@ -43,10 +43,9 @@ describe Elibri::XmlVersions do
     generated_product_2 = onix_from_mock(:basic_product, :record_reference => 'fdb8fa072be774d97a97', :contributors => [author_2])
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     diff = @elibri_xml_versions.diff
-  #  .should eq({:deleted => [], :added => [], :changes => [:record_reference]})
     diff[:deleted].should eq([])
     diff[:added].should eq([])
-    diff[:changes].should eq( [ {2167055520 => {:contributors => [:key_names] }}  ] )
+    diff[:changes].should eq( [ {:contributors => [{2167055520 => :key_names}] }  ] )
   end
 
   it "should return no changes for same book elibri objects" do

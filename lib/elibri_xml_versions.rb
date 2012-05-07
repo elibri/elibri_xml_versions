@@ -118,6 +118,9 @@ module Elibri
         #obsługa różnych elementów w arrayu
         a.each_with_index do |element, i|
           ret = check_tree(element, b[i])
+          [:changes, :added, :deleted].each do |key|
+            ret[key] = ret[key].map { |x| {element.id => x}}
+          end
           changes += ret[:changes]
           added += ret[:added]
           deleted += ret[:deleted]
@@ -138,15 +141,9 @@ module Elibri
             else
               #klasa zlozona
               ret = check_tree(a.send(attrib), b.send(attrib))
-              if a.send(attrib).id
-                changes << {a.send(attrib).id => {attrib => ret[:changes]}} if !ret[:changes].blank?
-                added << {attrib => ret[:added]} if !ret[:added].blank?
-                deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
-              else
-                changes << {attrib => ret[:changes]} if !ret[:changes].blank?
-                added << {attrib => ret[:added]} if !ret[:added].blank?
-                deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
-              end
+              changes << {attrib => ret[:changes]} if !ret[:changes].blank?
+              added << {attrib => ret[:added]} if !ret[:added].blank?
+              deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
             end
           end
         end
