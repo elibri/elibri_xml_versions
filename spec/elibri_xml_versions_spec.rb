@@ -120,9 +120,9 @@ describe Elibri::XmlVersions do
       :audience_age_from => :reading_age_from,
       :audience_age_to => :reading_age_to,
       :price_amount => :cover_price_from_3_0_1,
-      :vat => :vat_from_3_0_1
+      :vat => :vat_from_3_0_1,
+      :preview_exists? => :preview_exists
     }
-
     #strings
     [
       :publisher_name, :record_reference,
@@ -172,6 +172,21 @@ describe Elibri::XmlVersions do
       end
 
     #end strings  
+    end
+
+  #bools
+  [
+    :preview_exists?
+  ].each do |symbol|
+      
+     it "should see the change in #{symbol} attribute" do
+        generated_product = onix_from_mock(:basic_product, symbol => true)
+        generated_product_2 = onix_from_mock(:basic_product, symbol => false)
+        @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+        @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol])
+     end
+  
+    #end bools 
     end
 
 
@@ -240,5 +255,4 @@ describe Elibri::XmlVersions do
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff[:changes].should include({:imprint => [:name]})
   end
- 
 end
