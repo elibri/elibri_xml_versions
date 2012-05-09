@@ -15,7 +15,6 @@ describe Elibri::XmlVersions do
     :product_attachments => [],
     :product_availabilities => []
   }
-
   it "should return no changes for same basic elibri object" do
     generated_product = onix_from_mock(:basic_product)
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product.products.first)
@@ -95,7 +94,6 @@ describe Elibri::XmlVersions do
       @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
       @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})    
     end
-
     SPLITTING_SYMBOLS = [
       :publisher_name
     ]
@@ -120,8 +118,28 @@ describe Elibri::XmlVersions do
       :audience_age_from => :reading_age_from,
       :audience_age_to => :reading_age_to,
       :price_amount => :cover_price,
-      :vat => :vat
+      :vat => :vat,
+      :preview_exists? => :preview_exists,
+      :elibri_product_category1_id => :elibri_product_category1_id,
+      :elibri_product_category2_id => :elibri_product_category2_id
     }
+
+    it "should find the difference in categories" do
+      generated_product = onix_from_mock(:onix_subjects_example)
+      generated_product_2 = onix_from_mock(:onix_subjects_example)
+      @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+      @elibri_xml_versions.diff.should eq({:deleted => [], :added => [], :changes => []})
+
+      generated_product = onix_from_mock(:onix_subjects_example, :elibri_product_category1_id => 440, :elibri_product_category2_id => nil)
+      generated_product_2 = onix_from_mock(:onix_subjects_example, :elibri_product_category1_id => 550, :elibri_product_category2_id => nil)
+      @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+      @elibri_xml_versions.diff[:changes].should include(:elibri_product_category1_id)
+
+      generated_product = onix_from_mock(:onix_subjects_example, :elibri_product_category1_id => 440, :elibri_product_category2_id => 441)
+      generated_product_2 = onix_from_mock(:onix_subjects_example, :elibri_product_category1_id => 550, :elibri_product_category2_id => 551)
+      @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+      @elibri_xml_versions.diff[:changes].should include(:elibri_product_category1_id, :elibri_product_category2_id)
+    end
 
     #strings
     [
@@ -172,6 +190,21 @@ describe Elibri::XmlVersions do
       end
 
     #end strings  
+    end
+
+  #bools
+  [
+    :preview_exists?
+  ].each do |symbol|
+      
+     it "should see the change in #{symbol} attribute" do
+        generated_product = onix_from_mock(:basic_product, symbol => true)
+        generated_product_2 = onix_from_mock(:basic_product, symbol => false)
+        @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
+        @elibri_xml_versions.diff[:changes].should include(TRAVERSE_VECTOR[symbol])
+     end
+  
+    #end bools 
     end
 
 
@@ -240,5 +273,4 @@ describe Elibri::XmlVersions do
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     @elibri_xml_versions.diff[:changes].should include({:imprint => [:name]})
   end
- 
 end
