@@ -113,14 +113,14 @@ describe Elibri::XmlVersions do
       :ean => :ean,
       :deletion_text => :deletion_text,
       :trade_title => :trade_title,
-      :pkwiu => :pkwiu_from_3_0_1,
+      :pkwiu => :pkwiu,
       :title => :title,
       :subtitle => :subtitle,
       :edition_statement => :edition_statement,
       :audience_age_from => :reading_age_from,
       :audience_age_to => :reading_age_to,
-      :price_amount => :cover_price_from_3_0_1,
-      :vat => :vat_from_3_0_1
+      :price_amount => :cover_price,
+      :vat => :vat
     }
 
     #strings

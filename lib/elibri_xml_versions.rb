@@ -126,9 +126,15 @@ module Elibri
           deleted += ret[:deleted]
         end
       else
-        a.instance_variables.each do |attrib|
+        vars = []
+        if a.class.to_s.include? "Elibri::ONIX"
+          vars += a.class::ATTRIBUTES
+          vars += a.class::RELATIONS
+        end
+        vars = a.instance_variables if vars.blank?
+        vars.each do |attrib|
           next if SKIPPED_ATTRIBS.include? attrib
-          attrib = attrib.to_s.gsub("@", "").to_sym
+          attrib = attrib.to_s.gsub("@", "").to_sym if attrib.is_a?(String)
           if a.send(attrib).is_a? Array
             ret = check_tree(a.send(attrib), b.send(attrib))
             #TODO: otestować to
@@ -156,10 +162,16 @@ module Elibri
       if object.is_a? Array
         object.each { |x| result << calculate_hash(x) }
       else
-        object.instance_variables.each do |attrib|
+        vars = []
+        if object.class.to_s.include? "Elibri::ONIX"
+          vars += object.class::ATTRIBUTES
+          vars += object.class::RELATIONS
+        end
+        vars = object.instance_variables if vars.blank?
+        vars.each do |attrib|
           next if SKIPPED_ATTRIBS.include? attrib
           next if SKIPPED_2.include? attrib
-          attrib = attrib.to_s.gsub("@", "").to_sym
+          attrib = attrib.to_s.gsub("@", "").to_sym if attrib.is_a?(String)
           if object.send(attrib).is_a? Array
             result << calculate_hash(object.send(attrib))
           elsif object.send(attrib).is_a?(String) || object.send(attrib).is_a?(Numeric) || object.send(attrib).is_a?(Fixnum) || object.send(attrib).is_a?(Symbol)

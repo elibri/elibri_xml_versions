@@ -4,3 +4,4 @@ source "http://rubygems.org"
 gemspec
 
 #gem 'elibri_onix_mocks', :git => 'git://github.com/elibri/elibri_onix_mocks.git'
+gem 'elibri_onix', :git => 'git://github.com/elibri/elibri_onix.git'
