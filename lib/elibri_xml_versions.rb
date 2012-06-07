@@ -17,6 +17,9 @@ module Elibri
     SKIPPED_2 = ["@id", "@id_before_type_cast"]
                         
 
+    def eid
+      return "fcb38e846e666d8d686c491a23431a7b0336451b"
+    end
     
     attr_accessor :a, :b
     
@@ -76,11 +79,13 @@ module Elibri
       if a.is_a? Array
         a.compact!
         b.compact!
-        a.sort! { |x,y| x.id <=> y.id }
-        b.sort! { |x,y| x.id <=> y.id }
+        if a.all? { |x| x.respond_to?(:eid) }
+          a.sort! { |x,y| x.eid <=> y.eid }
+          b.sort! { |x,y| x.eid <=> y.eid }
+        end
         if a.all? { |x| x.instance_variables.include? "@id_before_type_cast"} || a.all? { |x| x.instance_variables.include? "@import_id"}
-          a_m = a.map { |x| x.id }
-          b_m = b.map { |x| x.id }
+          a_m = a.map { |x| x.eid }
+          b_m = b.map { |x| x.eid }
         else
 =begin
         ch = []
@@ -100,18 +105,18 @@ module Elibri
         end
      #   if a.map(&:id) != b.map(&:id)
         if a_m != b_m
-          deleted_ids = a.map(&:id) - b.map(&:id)
-          added_ids = b.map(&:id) - a.map(&:id)
-          deleted_ids.each do |id|
-            if a.find { |x| x.id == id } && !a.find { |x| x.id == id }.blank?
-              deleted << a.find { |x| x.id == id }
-              a.delete(a.find { |x| x.id == id })
+          deleted_ids = a.map(&:eid) - b.map(&:eid)
+          added_ids = b.map(&:eid) - a.map(&:eid)
+          deleted_ids.each do |eid|
+            if a.find { |x| x.eid == eid } && !a.find { |x| x.eid == eid }.blank?
+              deleted << a.find { |x| x.eid == eid }
+              a.delete(a.find { |x| x.eid == eid })
             end
           end
-          added_ids.each do |id|
-            if b.find { |x| x.id == id } && !b.find { |x| x.id == id }.blank?
-              added << b.find { |x| x.id == id }
-              b.delete(b.find { |x| x.id == id })
+          added_ids.each do |eid|
+            if b.find { |x| x.eid == eid } && !b.find { |x| x.eid == eid }.blank?
+              added << b.find { |x| x.eid == eid }
+              b.delete(b.find { |x| x.eid == eid })
             end
           end
         end
@@ -119,7 +124,7 @@ module Elibri
         a.each_with_index do |element, i|
           ret = check_tree(element, b[i])
           [:changes, :added, :deleted].each do |key|
-            ret[key] = ret[key].map { |x| {element.id => x}}
+            ret[key] = ret[key].map { |x| {element.eid => x}}
           end
           changes += ret[:changes]
           added += ret[:added]

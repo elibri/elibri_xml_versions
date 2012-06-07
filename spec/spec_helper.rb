@@ -22,11 +22,11 @@ RSpec.configure do |config|
 end
 
 def onix_from_mock(sym, *args)
-  Elibri::ONIX::Release_3_0::ONIXMessage.from_xml(Elibri::ONIX::XMLGenerator.new(Elibri::XmlMocks::Examples.send(sym, *args)).to_s)
+  Elibri::ONIX::Release_3_0::ONIXMessage.new(Elibri::ONIX::XMLGenerator.new(Elibri::XmlMocks::Examples.send(sym, *args)).to_s)
 end
 
 def xml_parse(xml_string)
-  Elibri::ONIX::Release_3_0::ONIXMessage.from_xml(xml_string)
+  Elibri::ONIX::Release_3_0::ONIXMessage.new(xml_string)
 end
 
 def generate_xml(mock)

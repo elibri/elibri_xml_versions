@@ -1,5 +1,6 @@
 require 'spec_helper'
-$VERBOSE = nil #temp: supress id warnings
+#require 'ruby-debug'
+#$VERBOSE = nil #temp: supress id warnings
 describe Elibri::XmlVersions do
 
   RAW_EXTRAS = {
