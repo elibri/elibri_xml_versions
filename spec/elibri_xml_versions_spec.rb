@@ -39,8 +39,8 @@ describe Elibri::XmlVersions do
   it "should return change in author on same basic elibri objects" do
     author = Elibri::XmlMocks::Examples.contributor_mock(:id => 2167055520)
     author_2 = Elibri::XmlMocks::Examples.contributor_mock(:last_name => 'Waza', :id => 2167055520)
-    generated_product = onix_from_mock(:basic_product, :record_reference => 'fdb8fa072be774d97a97', :contributors => [author])
-    generated_product_2 = onix_from_mock(:basic_product, :record_reference => 'fdb8fa072be774d97a97', :contributors => [author_2])
+    generated_product = onix_from_mock(:book_example, :record_reference => 'fdb8fa072be774d97a97', :contributors => [author])
+    generated_product_2 = onix_from_mock(:book_example, :record_reference => 'fdb8fa072be774d97a97', :contributors => [author_2])
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     diff = @elibri_xml_versions.diff
     diff[:deleted].should eq([])
@@ -73,8 +73,12 @@ describe Elibri::XmlVersions do
   end
 
   it "should return added element when new review is added" do
-    generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [Elibri::XmlMocks::Examples.review_mock]))
-    generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [Elibri::XmlMocks::Examples.review_mock, Elibri::XmlMocks::Examples.review_mock(:text_author => "lobuz lobuzialski")]))
+    generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [Elibri::XmlMocks::Examples.review_mock(:id => 11111)]))
+    generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge(:other_texts => [
+      Elibri::XmlMocks::Examples.review_mock(:id => 22222),
+      Elibri::XmlMocks::Examples.review_mock(:id => 33333, :text_author => "lobuz lobuzialski")
+    ]))
+
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     result = @elibri_xml_versions.diff
     (@elibri_xml_versions.convert_arr_to_hash result[:added])[:reviews].count.should eq(2)
@@ -104,7 +108,7 @@ describe Elibri::XmlVersions do
     ]
 
     TRAVERSE_VECTOR = {
-      :or_title => :original_title,
+      :original_title => :original_title,
       :publisher_name => :publisher_name,
       :record_reference => :record_reference,
       :deletion_text => :deletion_text,
@@ -145,7 +149,7 @@ describe Elibri::XmlVersions do
     #strings
     [
       :publisher_name, :record_reference,
-      :ean, :isbn_value, :deletion_text, :or_title,
+      :ean, :isbn_value, :deletion_text, :original_title,
       :trade_title, :pkwiu, :title, :subtitle, 
       :edition_statement
     ].each do |symbol|
