@@ -39,8 +39,8 @@ describe Elibri::XmlVersions do
   it "should return change in author on same basic elibri objects" do
     author = Elibri::XmlMocks::Examples.contributor_mock(:id => 2167055520)
     author_2 = Elibri::XmlMocks::Examples.contributor_mock(:last_name => 'Waza', :id => 2167055520)
-    generated_product = onix_from_mock(:book_example, :record_reference => 'fdb8fa072be774d97a97', :contributors => [author])
-    generated_product_2 = onix_from_mock(:book_example, :record_reference => 'fdb8fa072be774d97a97', :contributors => [author_2])
+    generated_product = onix_from_mock(:basic_product, :record_reference => 'fdb8fa072be774d97a97', :contributors => [author])
+    generated_product_2 = onix_from_mock(:basic_product, :record_reference => 'fdb8fa072be774d97a97', :contributors => [author_2])
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
     diff = @elibri_xml_versions.diff
     diff[:deleted].should eq([])
