@@ -105,20 +105,37 @@ module Elibri
         end
      #   if a.map(&:id) != b.map(&:id)
         if a_m != b_m
-          deleted_ids = a.map(&:eid) - b.map(&:eid)
-          added_ids = b.map(&:eid) - a.map(&:eid)
-          deleted_ids.each do |eid|
-            if a.find { |x| x.eid == eid } && !a.find { |x| x.eid == eid }.blank?
-              deleted << a.find { |x| x.eid == eid }
-              a.delete(a.find { |x| x.eid == eid })
+          if a.all? { |x| x.respond_to?(:eid) } && b.all? { |x| x.respond_to?(:eid) }
+            deleted_ids = a.map(&:eid) - b.map(&:eid)
+            added_ids = b.map(&:eid) - a.map(&:eid)
+            deleted_ids.each do |eid|
+              if a.find { |x| x.eid == eid } && !a.find { |x| x.eid == eid }.blank?
+                deleted << a.find { |x| x.eid == eid }
+                a.delete(a.find { |x| x.eid == eid })
+              end
             end
-          end
-          added_ids.each do |eid|
-            if b.find { |x| x.eid == eid } && !b.find { |x| x.eid == eid }.blank?
-              added << b.find { |x| x.eid == eid }
-              b.delete(b.find { |x| x.eid == eid })
+            added_ids.each do |eid|
+              if b.find { |x| x.eid == eid } && !b.find { |x| x.eid == eid }.blank?
+                added << b.find { |x| x.eid == eid }
+                b.delete(b.find { |x| x.eid == eid })
+              end
             end
-          end
+          else
+            deleted_ids = a.map(&:id) - b.map(&:id)
+            added_ids = b.map(&:id) - a.map(&:id)
+            deleted_ids.each do |id|
+              if a.find { |x| x.id == id } && !a.find { |x| x.id == id }.blank?
+                deleted << a.find { |x| x.id == id }
+                a.delete(a.find { |x| x.id == id })
+              end
+            end
+            added_ids.each do |eid|
+              if b.find { |x| x.id == id } && !b.find { |x| x.id == id }.blank?
+                added << b.find { |x| x.id == id }
+                b.delete(b.find { |x| x.id == id })
+              end
+            end
+          end        
         end
         #obsługa różnych elementów w arrayu
         a.each_with_index do |element, i|

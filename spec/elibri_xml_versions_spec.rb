@@ -267,7 +267,7 @@ describe Elibri::XmlVersions do
     generated_product = onix_from_mock(:basic_product, {:imprint => imprint})
     generated_product_2 = onix_from_mock(:basic_product, {:imprint => imprint_2})
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
-    @elibri_xml_versions.diff[:changes].should include({:imprint => [:name]})
+    @elibri_xml_versions.diff[:changes].should include(:imprint_name)
   end
 
   it "should detect change in object inside book product" do
@@ -276,6 +276,6 @@ describe Elibri::XmlVersions do
     generated_product = onix_from_mock(:book_example, RAW_EXTRAS.merge({:imprint => imprint}))
     generated_product_2 = onix_from_mock(:book_example, RAW_EXTRAS.merge({:imprint => imprint_2}))
     @elibri_xml_versions = Elibri::XmlVersions.new(generated_product.products.first, generated_product_2.products.first)
-    @elibri_xml_versions.diff[:changes].should include({:imprint => [:name]})
+    @elibri_xml_versions.diff[:changes].should include(:imprint_name)
   end
 end
