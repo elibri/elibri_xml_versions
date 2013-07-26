@@ -55,7 +55,8 @@ module Elibri
       end
       diffs
 =end
-      check_tree(@a, @b)
+      @stored_diff ||= check_tree(@a, @b)
+      @stored_diff
     end
     
     
@@ -158,14 +159,18 @@ module Elibri
           next if SKIPPED_ATTRIBS.include? attrib
           attrib = attrib.to_s.gsub("@", "").to_sym if attrib.is_a?(String)
           if a.send(attrib).is_a? Array
-            ret = check_tree(a.send(attrib), b.send(attrib))
-            #TODO: otestować to
-            changes << {attrib => ret[:changes]} if !ret[:changes].blank?
-            added << {attrib => ret[:added]} if !ret[:added].blank?
-            deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
+            if is_all_simple?(a.send(attrib))
+              changes << attrib if a.send(attrib) != b.send(attrib)
+            else
+              ret = check_tree(a.send(attrib), b.send(attrib))
+              #TODO: otestować to
+              changes << {attrib => ret[:changes]} if !ret[:changes].blank?
+              added << {attrib => ret[:added]} if !ret[:added].blank?
+              deleted << {attrib => ret[:deleted]} if !ret[:deleted].blank?
+            end
           else
-            if (a.send(attrib).is_a?(String) || a.send(attrib).is_a?(Numeric) || a.send(attrib).is_a?(NilClass) || b.send(attrib).is_a?(NilClass) ||
-                a.send(attrib).is_a?(TrueClass) || a.send(attrib).is_a?(FalseClass) || b.send(attrib).is_a?(TrueClass) || b.send(attrib).is_a?(FalseClass))
+            if (is_simple_type?(a.send(attrib)) || b.send(attrib).is_a?(NilClass) || 
+                b.send(attrib).is_a?(TrueClass) || b.send(attrib).is_a?(FalseClass) )
               changes << attrib if a.send(attrib) != b.send(attrib)
             else
               #klasa zlozona
@@ -197,7 +202,7 @@ module Elibri
           attrib = attrib.to_s.gsub("@", "").to_sym if attrib.is_a?(String)
           if object.send(attrib).is_a? Array
             result << calculate_hash(object.send(attrib))
-          elsif object.send(attrib).is_a?(String) || object.send(attrib).is_a?(Numeric) || object.send(attrib).is_a?(Fixnum) || object.send(attrib).is_a?(Symbol)
+          elsif is_simple_type?(object.send(attrib))
             result << object.send(attrib)
           else
             result << calculate_hash(object.send(attrib))
@@ -213,6 +218,17 @@ module Elibri
           hash[pair.keys.first] = pair.values.first
         end
       end
+    end
+    
+    def is_simple_type?(obj)
+      obj.is_a?(String) || obj.is_a?(Numeric) || 
+      obj.is_a?(NilClass) || obj.is_a?(TrueClass) || 
+      obj.is_a?(FalseClass) || obj.is_a?(Date) || 
+      obj.is_a?(Symbol) || obj.is_a?(Fixnum)
+    end
+    
+    def is_all_simple?(arr)
+      arr.all? {|e| is_simple_type?(e) }
     end
     
   end
