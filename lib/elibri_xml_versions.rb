@@ -62,7 +62,7 @@ module Elibri
     
     def check_tree(a, b)
      if a.class != b.class
-       raise "Different classes for diff" 
+       raise "Different classes for diff: #{a.class} and #{b.class}. Ids: #{a.eid}, #{b.eid}" 
      end
 =begin
         if a.class.is_a? NilClass
