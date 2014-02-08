@@ -4,7 +4,7 @@ require "elibri_xml_versions/version"
 require 'elibri_api_client'
 require 'elibri_onix_dict'
 require 'digest/sha2'
-
+require 'elibri_xml_versions/array.rb'
 
 
 
@@ -105,10 +105,13 @@ module Elibri
           b_m = b.map { |x| calculate_hash(x) }
         end
      #   if a.map(&:id) != b.map(&:id)
+     
+     ### tu jest błąd gdzieś 
+     ### orly?
         if a_m != b_m
           if a.all? { |x| x.respond_to?(:eid) } && b.all? { |x| x.respond_to?(:eid) }
-            deleted_ids = a.map(&:eid) - b.map(&:eid)
-            added_ids = b.map(&:eid) - a.map(&:eid)
+            deleted_ids = a.map(&:eid).subtract_once(b.map(&:eid))
+            added_ids = b.map(&:eid).subtract_once(a.map(&:eid))
             deleted_ids.each do |eid|
               if a.find { |x| x.eid == eid } && !a.find { |x| x.eid == eid }.blank?
                 deleted << a.find { |x| x.eid == eid }
